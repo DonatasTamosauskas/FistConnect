@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser currentUser;
     private DatabaseReference databaseReference;
+    private int currentAvatarId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +135,14 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, "Welcome, warrior!", Toast.LENGTH_SHORT).show();
         Intent loginIntent = new Intent(LoginActivity.this, ListActivity.class);
         LoginActivity.this.startActivity(loginIntent);
+    }
+
+    public void imageId1(View v) {
+        currentAvatarId = 0;
+    }
+
+    public void imageId2(View v) {
+        currentAvatarId = 1;
     }
 }
 
