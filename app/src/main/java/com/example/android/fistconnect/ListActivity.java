@@ -35,14 +35,16 @@ public class ListActivity extends AppCompatActivity {
 
         for (int i = 0; i < 10; i++) {
             Enemy f = new Enemy();
+            f.username="shitface";
+            f.level=i;
             enemyAdapter.add(f);
         }
         enemyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Enemy item = arrayOfEnemies.get(position);
+                Enemy challenger = arrayOfEnemies.get(position);
                 Intent matchIntent = new Intent(ListActivity.this, MatchActivity.class);
-               // matchIntent.putExtra("conv_information", item);
+                matchIntent.putExtra("match_information", challenger);
                 startActivity(matchIntent);
             }
         });
