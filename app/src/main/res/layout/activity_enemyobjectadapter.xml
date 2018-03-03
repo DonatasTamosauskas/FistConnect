@@ -9,7 +9,7 @@
         android:id="@+id/enemy_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/playericon"
         android:layout_margin="5dp"
         android:layout_gravity="center"
         android:layout_weight="1"/>
@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:text="@string/enemy_username"
         android:layout_margin="5dp"
+        android:fontFamily="@font/fist_connect"
         android:textSize="18sp"
         android:layout_gravity="center"
         android:layout_weight="5"/>
@@ -29,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enemy_level"
+        android:fontFamily="@font/fist_connect"
         android:textSize="18sp"
         android:layout_gravity="center"
         android:layout_margin="5dp"

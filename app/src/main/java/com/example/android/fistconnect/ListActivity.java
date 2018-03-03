@@ -1,6 +1,7 @@
 package com.example.android.fistconnect;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,9 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         //Create current user adapter
         ArrayList<Enemy> arrayOfUsers = new ArrayList<>();
         EnemyObjectAdapter adapter = new EnemyObjectAdapter(this, arrayOfUsers);
@@ -33,9 +37,9 @@ public class ListActivity extends AppCompatActivity {
         ListView enemyListView = (ListView) findViewById(R.id.display_enemies);
         enemyListView.setAdapter(enemyAdapter);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             Enemy f = new Enemy();
-            f.username="shitface";
+            f.username="Jonas";
             f.level=i;
             enemyAdapter.add(f);
         }
