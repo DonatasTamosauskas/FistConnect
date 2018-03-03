@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.MediaPlayer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,11 +59,16 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DatabaseReference databaseReference;
     private int currentAvatarId = 0;
+    public MediaPlayer mptheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mptheme= MediaPlayer.create(this, R.raw.main_theme_reg_fin);
+        mptheme.setLooping(true);
+        mptheme.start();
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -84,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+        mptheme.stop();
     }
 
     public void register(View v) {
