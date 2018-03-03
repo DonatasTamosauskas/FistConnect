@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // Adding a new user in database by UID
                                 String userID = currentUser.getUid();
                                 databaseReference = FirebaseDatabase.getInstance().getReference();
-                                CurrentUser newCurrentUser = new CurrentUser(rUserName, 0, 0, userID);
+                                CurrentUser newCurrentUser = new CurrentUser(rUserName, 0, currentAvatarId, userID);
                                 databaseReference.child("users").child(userID).setValue(newCurrentUser);
 
                                 updateUI();
