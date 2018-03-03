@@ -38,6 +38,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +53,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
+    private FirebaseUser currentUser;
+    private DatabaseReference databaseReference;
     private int currentAvatarId = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             updateUI();
             mAuth.removeAuthStateListener(mAuthListener);
@@ -102,12 +104,18 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 //Log.d(TAG, "createUserWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
+                                currentUser = mAuth.getCurrentUser();
 
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                         .setDisplayName(rUserName).build();
 
-                                user.updateProfile(profileUpdates);
+                                currentUser.updateProfile(profileUpdates);
+
+                                // Adding a new user in database by UID
+                                String userID = currentUser.getUid();
+                                databaseReference = FirebaseDatabase.getInstance().getReference();
+                                CurrentUser newCurrentUser = new CurrentUser(rUserName, 0, 0, userID);
+                                databaseReference.child("users").child(userID).setValue(newCurrentUser);
 
                                 updateUI();
                             } else {

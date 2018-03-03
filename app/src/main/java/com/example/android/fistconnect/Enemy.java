@@ -12,8 +12,10 @@ public class Enemy implements Serializable {
 
 
     public ImageView imageView;
-    public String username;
+    public int avatarID;
     public int level;
+    public String username;
+    public String userID;
     public boolean isChallenged;
 
     public Enemy() {
