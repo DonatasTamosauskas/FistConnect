@@ -38,17 +38,6 @@ public class EnemyObjectAdapter extends ArrayAdapter<Enemy> {
         enemyLevel.setText(String.valueOf(enemy.level));
         enemyImage.setImageResource(R.drawable.playericon);
 
-        //Change background of list item
-        /*
-        if(enemy.isChallenged) {
-            LinearLayout layout =(LinearLayout) convertView.findViewById(R.id.enemylayout);
-            layout.setBackgroundResource(R.drawable.ic_launcher_background); //change to background image
-        } else {
-            LinearLayout layout =(LinearLayout) convertView.findViewById(R.id.enemylayout);
-            layout.setBackgroundResource(R.drawable.ic_launcher_background); //change to background image
-        }
-        */
-
         return convertView;
     }
 }
