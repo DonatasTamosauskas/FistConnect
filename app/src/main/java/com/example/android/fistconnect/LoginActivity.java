@@ -124,7 +124,9 @@ public class LoginActivity extends AppCompatActivity {
 
     //Needed intent to change UI!!
     private void updateUI() {
-        Toast.makeText(this, "All good", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Welcome, warrior!", Toast.LENGTH_SHORT).show();
+        Intent loginIntent = new Intent(LoginActivity.this, ListActivity.class);
+        LoginActivity.this.startActivity(loginIntent);
     }
 }
 
