@@ -1,0 +1,75 @@
+{
+  "project_info": {
+    "project_number": "872510509732",
+    "firebase_url": "https://fistconnect-31f6d.firebaseio.com",
+    "project_id": "fistconnect-31f6d",
+    "storage_bucket": "fistconnect-31f6d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872510509732:android:053e93692f5cf9d0",
+        "android_client_info": {
+          "package_name": "com.example.android.fistconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872510509732-9rvgc4i9bets9rasdjkjmj32v6c1s6k8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.fistconnect",
+            "certificate_hash": "d5b40df6680d49ad506f8c8375a538cc5eeee124"
+          }
+        },
+        {
+          "client_id": "872510509732-m3bvig2oe6h6uvdde28pusnca9id1eti.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "872510509732-qe8mgai8flrtfnr1a471kher43ebb7nf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.fistconnect",
+            "certificate_hash": "6231764f7dfdc4fe78a6656a33f6660b11fe4cb5"
+          }
+        },
+        {
+          "client_id": "872510509732-gkd3lkldpmvr80bvso31f3p28s1o8rse.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.fistconnect",
+            "certificate_hash": "c081bf207841f3e784cc5554592bbef73f0e62a4"
+          }
+        },
+        {
+          "client_id": "872510509732-1u2g5mt2ihe3gulvj0h2jb6no83jkkt8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCirHoo1S_IB97QvMDDNbxPscYGxBqqeiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872510509732-m3bvig2oe6h6uvdde28pusnca9id1eti.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
