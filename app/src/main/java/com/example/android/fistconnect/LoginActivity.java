@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -139,10 +141,22 @@ public class LoginActivity extends AppCompatActivity {
 
     public void imageId1(View v) {
         currentAvatarId = 0;
+
+        LinearLayout linearLayout = findViewById(R.id.main_image);
+        linearLayout.setVisibility(LinearLayout.GONE);
+        
+        LinearLayout secondLayout = findViewById(R.id.first_image);
+        secondLayout.setVisibility(LinearLayout.VISIBLE);
     }
 
     public void imageId2(View v) {
         currentAvatarId = 1;
+
+        LinearLayout linearLayout = findViewById(R.id.main_image);
+        linearLayout.setVisibility(LinearLayout.GONE);
+
+        LinearLayout secondLayout = findViewById(R.id.second_image);
+        secondLayout.setVisibility(LinearLayout.VISIBLE);
     }
 }
 
