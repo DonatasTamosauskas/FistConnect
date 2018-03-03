@@ -61,6 +61,7 @@
         android:textSize="18sp"/>
 
     <LinearLayout
+        android:id="@+id/main_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -80,7 +81,41 @@
             android:src="@drawable/playericon1"
             android:onClick="imageId2"/>
 
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/first_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_margin="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/playericon"
+            android:onClick="imageId1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/second_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_margin="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/playericon1"
+            android:onClick="imageId1"/>
 
     </LinearLayout>
 
