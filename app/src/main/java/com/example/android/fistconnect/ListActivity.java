@@ -36,8 +36,4 @@ public class ListActivity extends AppCompatActivity {
             enemyAdapter.add(f);
         }
     }
-
-    public void startMatch(View v) {
-        
-    }
 }
