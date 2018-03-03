@@ -19,8 +19,7 @@
         android:id="@+id/display_enemies"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:onClick="startMatch">
+        android:layout_height="wrap_content">
 
     </ListView>
 

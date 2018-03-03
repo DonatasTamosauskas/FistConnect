@@ -1,8 +1,10 @@
 package com.example.android.fistconnect;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -26,7 +28,7 @@ public class ListActivity extends AppCompatActivity {
         adapter.add(e);
 
         //Create adapter for enemies
-        ArrayList<Enemy> arrayOfEnemies = new ArrayList<>();
+        final ArrayList<Enemy> arrayOfEnemies = new ArrayList<>();
         EnemyObjectAdapter enemyAdapter = new EnemyObjectAdapter(this, arrayOfEnemies);
         ListView enemyListView = (ListView) findViewById(R.id.display_enemies);
         enemyListView.setAdapter(enemyAdapter);
@@ -35,9 +37,16 @@ public class ListActivity extends AppCompatActivity {
             Enemy f = new Enemy();
             enemyAdapter.add(f);
         }
+        enemyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Enemy item = arrayOfEnemies.get(position);
+                Intent matchIntent = new Intent(ListActivity.this, MatchActivity.class);
+               // matchIntent.putExtra("conv_information", item);
+                startActivity(matchIntent);
+            }
+        });
     }
 
-    public void startMatch(View v) {
-        
-    }
+
 }
