@@ -5,7 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/playerlistp"
     tools:context="com.example.android.fistconnect.ListActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:src="@drawable/opponent"/>
 
     <ListView
         android:id="@+id/display_currentUser"

@@ -36,7 +36,7 @@ public class EnemyObjectAdapter extends ArrayAdapter<Enemy> {
 
         enemyUsername.setText(String.valueOf(enemy.username));
         enemyLevel.setText(String.valueOf(enemy.level));
-        enemyImage.setImageResource(R.drawable.ic_launcher_background);
+        enemyImage.setImageResource(R.drawable.playericon);
 
         //Change background of list item
         /*
