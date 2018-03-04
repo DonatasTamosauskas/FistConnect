@@ -11,6 +11,7 @@ public class Player {
     String username;
 
     public Player() {
+        health = 3;
     }
 
     public String getUserId() {
