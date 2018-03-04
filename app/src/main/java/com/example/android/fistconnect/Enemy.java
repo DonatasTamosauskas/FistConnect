@@ -1,7 +1,5 @@
 package com.example.android.fistconnect;
 
-import android.widget.ImageView;
-
 import java.io.Serializable;
 
 /**
@@ -11,7 +9,6 @@ import java.io.Serializable;
 public class Enemy implements Serializable {
 
 
-    public ImageView imageView;
     public int avatarID;
     public int level;
     public String username;
