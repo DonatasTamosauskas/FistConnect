@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,7 +32,7 @@ public class MatchActivity extends AppCompatActivity {
         Enemy enemy=(Enemy) getIntent.getSerializableExtra("match_information");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userID = currentUser.getUid();
-        myRef = FirebaseDatabase.getInstance().getReference("users");
+        /*myRef = FirebaseDatabase.getInstance().getReference("users");
 
         myRef.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
@@ -42,21 +43,20 @@ public class MatchActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });
+        });*/
 
 
-        host.setUserId(user.userID);
-        host.setUsername(user.username);
-        host.setAvatarID(user.avatarID);
+        host.setUserId(currentUser.getUid());
+        host.setUsername(currentUser.getDisplayName());
 
-        guest.setAvatarID(enemy.avatarID);
         guest.setUsername(enemy.username);
         guest.setUserId(enemy.userID);
-
+        Toast.makeText(this, guest.getUsername(), Toast.LENGTH_SHORT).show();
         match.setPlayer1(host);
+        match.setWinnerId(host.getUserId());
         match.setPlayer2(guest);
 
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("match").child(guest.getUserId()).setValue(match);
     }
-
-
 }

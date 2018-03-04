@@ -5,53 +5,43 @@ package com.example.android.fistconnect;
  */
 
 public class Player {
-    String UserId;
-    int PunchCount = 0;
-    int Health = 3;
-    String Username;
-    int avatarID;
+    String userId;
+    int punchCount;
+    int health;
+    String username;
 
     public Player() {
     }
 
-    public int getAvatarID() {
-        return avatarID;
-    }
-
-    public void setAvatarID(int avatarID) {
-        this.avatarID = avatarID;
+    public String getUserId() {
+        return userId;
     }
 
     public void setUserId(String userId) {
-        UserId = userId;
-    }
-
-    public void setPunchCount(int punchCount) {
-        PunchCount = punchCount;
-    }
-
-
-    public void setHealth(int health) {
-        Health = health;
-    }
-
-    public String getUserId() {
-        return UserId;
+        this.userId = userId;
     }
 
     public int getPunchCount() {
-        return PunchCount;
+        return punchCount;
     }
 
-      public int getHealth() {
-        return Health;
+    public void setPunchCount(int punchCount) {
+        this.punchCount = punchCount;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public void setUsername(String username) {
-        Username = username;
+        this.username = username;
     }
 }
