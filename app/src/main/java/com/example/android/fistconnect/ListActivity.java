@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,13 +18,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
 
     private FirebaseUser currentUser;
-    private DatabaseReference myRef;
+    private DatabaseReference usersReference;
+    private DatabaseReference matchReference;
     private CurrentUser user;
+    private Match match;
 
     private Enemy enemy;
 
@@ -49,9 +50,9 @@ public class ListActivity extends AppCompatActivity {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userID = currentUser.getUid();
-        myRef = FirebaseDatabase.getInstance().getReference("users");
+        usersReference = FirebaseDatabase.getInstance().getReference("users");
 
-        myRef.child(userID).addValueEventListener(new ValueEventListener() {
+        usersReference.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 user = snapshot.getValue(CurrentUser.class);
@@ -69,8 +70,8 @@ public class ListActivity extends AppCompatActivity {
         enemyListView = (ListView) findViewById(R.id.display_enemies);
         enemyListView.setAdapter(enemyAdapter);
 
-        myRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference usersdRef = myRef.child("users");
+        usersReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = usersReference.child("users");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
@@ -96,8 +97,28 @@ public class ListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Enemy challenger = arrayOfEnemies.get(position);
                 Intent matchIntent = new Intent(ListActivity.this, MatchActivity.class);
-                matchIntent.putExtra("match_information", challenger);
+                matchIntent.putExtra("enemy_information", challenger);
                 startActivity(matchIntent);
+            }
+        });
+
+        matchReference = FirebaseDatabase.getInstance().getReference("match");
+
+        matchReference.child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if ((match = snapshot.getValue(Match.class)) != null){
+                    matchReference.child(currentUser.getUid()).child("hasStarted").setValue(true);
+
+                    Intent gameActivity = new Intent(ListActivity.this, GameActivity.class);
+                    gameActivity.putExtra("match_information", match);
+                    startActivity(gameActivity);
+                    //Toast.makeText(ListActivity.this, "BLT KONNEKT", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 

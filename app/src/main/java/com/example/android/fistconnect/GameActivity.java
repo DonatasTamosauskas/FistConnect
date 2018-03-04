@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.content.Intent;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,6 +40,9 @@ public class GameActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+      
+        Intent getIntent = getIntent();
+        Match currentMatch = (Match) getIntent.getSerializableExtra("match_information");
 
         //firstPlayer = currentMatch.getPlayer1();
         //secondPlayer = currentMatch.getPlayer2();

@@ -1,13 +1,11 @@
 package com.example.android.fistconnect;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -36,7 +34,16 @@ public class EnemyObjectAdapter extends ArrayAdapter<Enemy> {
 
         enemyUsername.setText(String.valueOf(enemy.username));
         enemyLevel.setText(String.valueOf(enemy.level));
-        enemyImage.setImageResource(R.drawable.playericon);
+
+        switch (enemy.avatarID) {
+            case 0:
+                enemyImage.setImageResource(R.drawable.playericon);
+                break;
+
+            case 1:
+                enemyImage.setImageResource(R.drawable.playericon1);
+                break;
+        }
 
         return convertView;
     }
