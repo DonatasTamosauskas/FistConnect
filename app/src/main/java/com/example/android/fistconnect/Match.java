@@ -11,6 +11,26 @@ public class Match {
     Boolean HasStarted=false;
     Boolean IsOver=false;
 
+    public void setPlayer1(Player player1) {
+        this.player1 = player1;
+    }
+
+    public void setPlayer2(Player player2) {
+        this.player2 = player2;
+    }
+
+    public void setWinnerId(String winnerId) {
+        WinnerId = winnerId;
+    }
+
+    public void setHasStarted(Boolean hasStarted) {
+        HasStarted = hasStarted;
+    }
+
+    public void setOver(Boolean over) {
+        IsOver = over;
+    }
+
     public Player getPlayer1() {
         return player1;
     }

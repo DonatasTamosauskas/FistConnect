@@ -6,11 +6,13 @@ package com.example.android.fistconnect;
 
 public class Player {
     String UserId;
-    int PunchCount=0;
-    int DamageDealt=0;
-    int Health=100;
+    int PunchCount = 0;
+    int Health = 3;
     String Username;
     int avatarID;
+
+    public Player() {
+    }
 
     public int getAvatarID() {
         return avatarID;
@@ -28,9 +30,6 @@ public class Player {
         PunchCount = punchCount;
     }
 
-    public void setDamageDealt(int damageDealt) {
-        DamageDealt = damageDealt;
-    }
 
     public void setHealth(int health) {
         Health = health;
@@ -44,11 +43,7 @@ public class Player {
         return PunchCount;
     }
 
-    public int getDamageDealt() {
-        return DamageDealt;
-    }
-
-    public int getHealth() {
+      public int getHealth() {
         return Health;
     }
 

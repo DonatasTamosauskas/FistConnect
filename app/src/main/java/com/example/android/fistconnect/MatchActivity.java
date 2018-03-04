@@ -17,14 +17,16 @@ public class MatchActivity extends AppCompatActivity {
 
     private FirebaseUser currentUser;
     private DatabaseReference myRef;
-    private CurrentUser user;
-    private Match match;
-    private Player host;
-    private Player guest;
+    private CurrentUser user = new CurrentUser();
+    private Match match = new Match();
+    private Player host = new Player();
+    private Player guest = new Player();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_match);
         Intent getIntent=getIntent();
         Enemy enemy=(Enemy) getIntent.getSerializableExtra("match_information");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -42,6 +44,7 @@ public class MatchActivity extends AppCompatActivity {
             }
         });
 
+
         host.setUserId(user.userID);
         host.setUsername(user.username);
         host.setAvatarID(user.avatarID);
@@ -50,10 +53,8 @@ public class MatchActivity extends AppCompatActivity {
         guest.setUsername(enemy.username);
         guest.setUserId(enemy.userID);
 
-
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match);
+        match.setPlayer1(host);
+        match.setPlayer2(guest);
 
     }
 
