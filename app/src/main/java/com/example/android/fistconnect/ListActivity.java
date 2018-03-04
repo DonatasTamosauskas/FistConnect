@@ -110,10 +110,10 @@ public class ListActivity extends AppCompatActivity {
                 if ((match = snapshot.getValue(Match.class)) != null){
                     matchReference.child(currentUser.getUid()).child("hasStarted").setValue(true);
 
-                    //Intent gameActivity = new Intent(ListActivity.this, GameActivity.class);
-                    //gameActivity.putExtra("match_information", match);
-                    //startActivity(gameActivity);
-                    Toast.makeText(ListActivity.this, "BLT KONNEKT", Toast.LENGTH_SHORT).show();
+                    Intent gameActivity = new Intent(ListActivity.this, GameActivity.class);
+                    gameActivity.putExtra("match_information", match);
+                    startActivity(gameActivity);
+                    //Toast.makeText(ListActivity.this, "BLT KONNEKT", Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
