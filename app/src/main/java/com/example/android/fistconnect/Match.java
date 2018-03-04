@@ -14,8 +14,13 @@ public class Match implements Serializable {
     String winnerId;
     Boolean hasStarted = false;
     Boolean isOver = false;
+    public boolean hasPunched = false;
+    public  LastPunch lastPunch;
 
     public Match() {
+        player1 = new Player();
+        player2 = new Player();
+        lastPunch = new LastPunch();
     }
 
     public Player getPlayer1() {

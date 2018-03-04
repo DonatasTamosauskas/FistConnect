@@ -27,21 +27,21 @@ public class GestureDetector implements SensorEventListener {
     private static boolean hasMoveHappened = false;
 
 
-    public void initiateSensors(SensorManager newSensorManager, boolean hasSensors){
-        mSensorManager=newSensorManager;
+    public void initiateSensors(SensorManager newSensorManager, boolean hasSensors) {
+        mSensorManager = newSensorManager;
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null && mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
             LinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
             GravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
             mSensorManager.registerListener(this, LinearAcceleration, mSensorManager.SENSOR_DELAY_FASTEST);
             mSensorManager.registerListener(this, GravitySensor, mSensorManager.SENSOR_DELAY_FASTEST);
-            hasSensors=true;
-        }else {
-            hasSensors=false;
+            hasSensors = true;
+        } else {
+            hasSensors = false;
         }
 
     }
 
-    public int getGestureType(){
+    public int getGestureType() {
         return detectedGestureType;
     }
 
@@ -50,33 +50,36 @@ public class GestureDetector implements SensorEventListener {
         Sensor sensor = sensorEvent.sensor;
 
         if (sensor.getType() == Sensor.TYPE_GRAVITY) {
-            if(sensorEvent.values[2] < 0){
-                punchAllowed=true;
+            if (sensorEvent.values[2] < 0) {
+                punchAllowed = true;
             } else {
-                punchAllowed=false;
+                punchAllowed = false;
             }
 
         }
-        if(sensor.getType()==Sensor.TYPE_LINEAR_ACCELERATION){
+        /*if(sensor.getType()==Sensor.TYPE_LINEAR_ACCELERATION){
             // Log.i(TAG, "X: " + sensorEvent.values[0] + ", Y: " + sensorEvent.values[1] + ", Z: " + sensorEvent.values[2]);
-        }
+        }*/
 
-        if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[0] > 15 && sensorEvent.values[1] < 5 && sensorEvent.values[2] < 5 && punchAllowed==true) {
-            detectedGestureType=1;
+        if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[0] > 15 && sensorEvent.values[1] < 5 && sensorEvent.values[2] < 5 && punchAllowed == true) {
+            detectedGestureType = 1;
             Log.i(TAG, "123 Punch");
             hasMoveHappened = true;
+            mSensorManager.unregisterListener(this);
         }
 
-        if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[0] > 15 && sensorEvent.values[1] < 5 && sensorEvent.values[2] < 5 && punchAllowed==false) {
-            detectedGestureType=2;
+        if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[0] > 15 && sensorEvent.values[1] < 5 && sensorEvent.values[2] < 5 && punchAllowed == false) {
+            detectedGestureType = 2;
             Log.i(TAG, "123 Low blow");
             hasMoveHappened = true;
+            mSensorManager.unregisterListener(this);
         }
 
         if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[1] > 15 && sensorEvent.values[0] < 10 && sensorEvent.values[2] < 10) {
-            detectedGestureType=3;
+            detectedGestureType = 3;
             Log.i(TAG, "123 Block");
             hasMoveHappened = true;
+            mSensorManager.unregisterListener(this);
         }
     }
 

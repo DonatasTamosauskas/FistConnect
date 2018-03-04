@@ -69,7 +69,7 @@ public class MatchActivity extends AppCompatActivity {
                     Intent matchIntent = new Intent(MatchActivity.this, GameActivity.class);
                     matchIntent.putExtra("match_information", match);
                     startActivity(matchIntent);
-                    Toast.makeText(MatchActivity.this, "something something dark side", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MatchActivity.this, "something something dark side", Toast.LENGTH_SHORT).show();
                 }
 
             }
