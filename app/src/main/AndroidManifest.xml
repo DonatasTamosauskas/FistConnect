@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ListActivity" />
-        <activity android:name=".MatchActivity"></activity>
+        <activity android:name=".MatchActivity" />
+        <activity android:name=".GameActivity"></activity>
     </application>
 
 </manifest>

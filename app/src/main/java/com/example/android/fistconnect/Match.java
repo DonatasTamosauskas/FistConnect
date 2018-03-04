@@ -6,7 +6,9 @@ import java.io.Serializable;
  * Created by Asus on 3/3/2018.
  */
 
+
 public class Match implements Serializable {
+
     Player player1;
     Player player2;
     String winnerId;

@@ -18,7 +18,6 @@ import com.google.firebase.database.ValueEventListener;
 public class MatchActivity extends AppCompatActivity {
 
     private FirebaseUser currentUser;
-    private DatabaseReference myRef;
     private CurrentUser user = new CurrentUser();
     private Match match = new Match();
     private Player host = new Player();
@@ -32,8 +31,8 @@ public class MatchActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-        Intent getIntent=getIntent();
-        Enemy enemy=(Enemy) getIntent.getSerializableExtra("match_information");
+        Intent getIntent = getIntent();
+        Enemy enemy = (Enemy) getIntent.getSerializableExtra("match_information");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userID = currentUser.getUid();
         /*myRef = FirebaseDatabase.getInstance().getReference("users");
@@ -55,12 +54,31 @@ public class MatchActivity extends AppCompatActivity {
 
         guest.setUsername(enemy.username);
         guest.setUserId(enemy.userID);
-        Toast.makeText(this, guest.getUsername(), Toast.LENGTH_SHORT).show();
         match.setPlayer1(host);
         match.setWinnerId(host.getUserId());
         match.setPlayer2(guest);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("match").child(guest.getUserId()).setValue(match);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());
+        databaseReference.setValue(match);
+        Toast.makeText(this, guest.getUsername(), Toast.LENGTH_SHORT).show();
+        databaseReference.child("hasStarted").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.getValue(Boolean.class)) {
+                    Intent matchIntent = new Intent(MatchActivity.this, GameActivity.class);
+                    //matchIntent.putExtra("match_information", match);
+                    startActivity(matchIntent);
+                    Toast.makeText(MatchActivity.this, "something something dark side", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
     }
 }
