@@ -13,6 +13,7 @@ public class Player implements Serializable {
     String username;
 
     public Player() {
+        health = 3;
     }
 
     public String getUserId() {
