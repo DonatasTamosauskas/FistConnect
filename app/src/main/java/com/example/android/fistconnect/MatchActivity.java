@@ -32,7 +32,7 @@ public class MatchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
         Intent getIntent = getIntent();
-        Enemy enemy = (Enemy) getIntent.getSerializableExtra("match_information");
+        Enemy enemy = (Enemy) getIntent.getSerializableExtra("enemy_information");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userID = currentUser.getUid();
         /*myRef = FirebaseDatabase.getInstance().getReference("users");
@@ -67,7 +67,7 @@ public class MatchActivity extends AppCompatActivity {
 
                 if (dataSnapshot.getValue(Boolean.class)) {
                     Intent matchIntent = new Intent(MatchActivity.this, GameActivity.class);
-                    //matchIntent.putExtra("match_information", match);
+                    matchIntent.putExtra("match_information", match);
                     startActivity(matchIntent);
                     Toast.makeText(MatchActivity.this, "something something dark side", Toast.LENGTH_SHORT).show();
                 }

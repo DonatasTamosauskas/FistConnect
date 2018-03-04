@@ -97,7 +97,7 @@ public class ListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Enemy challenger = arrayOfEnemies.get(position);
                 Intent matchIntent = new Intent(ListActivity.this, MatchActivity.class);
-                matchIntent.putExtra("match_information", challenger);
+                matchIntent.putExtra("enemy_information", challenger);
                 startActivity(matchIntent);
             }
         });
