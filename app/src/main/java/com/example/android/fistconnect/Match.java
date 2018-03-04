@@ -1,15 +1,17 @@
 package com.example.android.fistconnect;
 
+import java.io.Serializable;
+
 /**
  * Created by Asus on 3/3/2018.
  */
 
-public class Match {
+public class Match implements Serializable {
     Player player1;
     Player player2;
     String winnerId;
-    Boolean hasStarted=false;
-    Boolean isOver=false;
+    Boolean hasStarted = false;
+    Boolean isOver = false;
 
     public Match() {
     }
