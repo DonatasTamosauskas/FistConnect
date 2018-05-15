@@ -8,9 +8,9 @@ import java.io.Serializable;
 
 public class LastPunch implements Serializable{
     private String userID;
-    private MoveBy userRole;
+    private HitType userRole;
 
-    public LastPunch(String uId, MoveBy userRole) {
+    public LastPunch(String uId, HitType userRole) {
         userID = uId;
         this.userRole = userRole;
     }
@@ -25,11 +25,11 @@ public class LastPunch implements Serializable{
         this.userID = userID;
     }
 
-    public MoveBy getUserRole() {
+    public HitType getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(MoveBy userRole) {
+    public void setUserRole(HitType userRole) {
         this.userRole = userRole;
     }
 }

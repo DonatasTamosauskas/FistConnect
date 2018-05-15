@@ -12,8 +12,7 @@ import android.widget.Toast;
 import com.example.android.fistconnect.R;
 import com.example.android.fistconnect.models.LastPunch;
 import com.example.android.fistconnect.models.Match;
-import com.example.android.fistconnect.models.MoveBy;
-import com.example.android.fistconnect.models.Player;
+import com.example.android.fistconnect.models.HitType;
 import com.example.android.fistconnect.utils.GestureDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,9 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class GameActivity extends AppCompatActivity {
-    private Match currentMatch;
-    private Player firstPlayer;
-    private Player secondPlayer;
 
     private GestureDetector gestureDetector;
     private SensorManager mSensorManager;
@@ -34,9 +30,10 @@ public class GameActivity extends AppCompatActivity {
 
     private int moveMadeByFirstPlayer;
     private int moveMadeBySecondPlayer;
-    private boolean peckingOrder = true;
-    private boolean responseLoop = false;
     private Boolean hasFailed = false;
+    
+
+    private Match currentMatch;
     private String currentUserId;
     private String enemyId;
 
@@ -99,7 +96,7 @@ public class GameActivity extends AppCompatActivity {
     private void makeFirstMoveIfNeeded() {
         if (!currentMatch.getPlayer1().getUserId().equals(enemyId)) {
             //firstPunch();
-            currentMatch.setLastPunch(new LastPunch(currentUserId, MoveBy.FIRST_PLAYER));
+            currentMatch.setLastPunch(new LastPunch(currentUserId, HitType.PUNCH));
             currentMatch.setHasPunched(true);
             matchReference.setValue(currentMatch);
         }
@@ -122,7 +119,7 @@ public class GameActivity extends AppCompatActivity {
                             matchReference.setValue(currentMatch);
 
                         } else {
-                            LastPunch lastPunch = new LastPunch(currentUserId, MoveBy.FIRST_PLAYER);
+                            LastPunch lastPunch = new LastPunch(currentUserId, HitType.PUNCH);
                             punchReference.setValue(lastPunch);
                         }
                     }
