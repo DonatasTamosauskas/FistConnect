@@ -1,15 +1,14 @@
 package com.example.android.fistconnect.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.android.fistconnect.models.Match;
 import com.example.android.fistconnect.R;
-import com.example.android.fistconnect.models.CurrentUser;
 import com.example.android.fistconnect.models.Enemy;
+import com.example.android.fistconnect.models.Match;
 import com.example.android.fistconnect.models.Player;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MatchActivity extends AppCompatActivity {
 
+    private DatabaseReference currentMatchReference;
     private FirebaseUser currentUser;
     private Enemy enemy;
 
@@ -41,10 +41,32 @@ public class MatchActivity extends AppCompatActivity {
 
         setMachInformation();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());
-        databaseReference.setValue(match);
+        currentMatchReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());
+        currentMatchReference.setValue(match);
+
         Toast.makeText(this, guest.getUsername(), Toast.LENGTH_SHORT).show();
-        databaseReference.child("hasStarted").addValueEventListener(new ValueEventListener() {
+        addListenerForMatchHasStartedEvent();
+
+    }
+
+    private void setMachInformation() {
+        match = new Match();
+        host = new Player();
+        guest = new Player();
+
+        host.setUserId(currentUser.getUid());
+        host.setUsername(currentUser.getDisplayName());
+
+        guest.setUsername(enemy.username);
+        guest.setUserId(enemy.userID);
+
+        match.setPlayer1(host);
+        match.setWinnerId(host.getUserId());
+        match.setPlayer2(guest);
+    }
+
+    private void addListenerForMatchHasStartedEvent() {
+        currentMatchReference.child("hasStarted").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -62,22 +84,5 @@ public class MatchActivity extends AppCompatActivity {
 
             }
         });
-
-    }
-
-    private void setMachInformation(){
-        match = new Match();
-        host = new Player();
-        guest = new Player();
-
-        host.setUserId(currentUser.getUid());
-        host.setUsername(currentUser.getDisplayName());
-
-        guest.setUsername(enemy.username);
-        guest.setUserId(enemy.userID);
-
-        match.setPlayer1(host);
-        match.setWinnerId(host.getUserId());
-        match.setPlayer2(guest);
     }
 }
