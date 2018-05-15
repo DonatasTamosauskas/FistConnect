@@ -17,14 +17,10 @@ public class Match implements Serializable {
     private String winnerId;
     private Boolean hasStarted = false;
     private Boolean isOver = false;
-    public boolean hasPunched = false;
-    public LastPunch lastPunch;
+    private boolean hasPunched = false;
+    private LastPunch lastPunch;
 
-    public Match() {
-        player1 = new Player();
-        player2 = new Player();
-        lastPunch = new LastPunch();
-    }
+    public Match() {}
 
     public Player getPlayer1() {
         return player1;
@@ -54,16 +50,31 @@ public class Match implements Serializable {
         return hasStarted;
     }
 
-    public Boolean getIsOver() {
+    public void setHasStarted(Boolean hasStarted) {
+        this.hasStarted = hasStarted;
+    }
+
+    public Boolean getOver() {
         return isOver;
     }
 
-    public void setIsOver(Boolean over) {
+    public void setOver(Boolean over) {
         isOver = over;
     }
 
-    public void setHasStarted(Boolean hasStarted) {
-        this.hasStarted = hasStarted;
+    public boolean isHasPunched() {
+        return hasPunched;
+    }
 
+    public void setHasPunched(boolean hasPunched) {
+        this.hasPunched = hasPunched;
+    }
+
+    public LastPunch getLastPunch() {
+        return lastPunch;
+    }
+
+    public void setLastPunch(LastPunch lastPunch) {
+        this.lastPunch = lastPunch;
     }
 }

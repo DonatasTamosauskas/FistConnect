@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.android.fistconnect.R;
 import com.example.android.fistconnect.models.LastPunch;
 import com.example.android.fistconnect.models.Match;
+import com.example.android.fistconnect.models.MoveBy;
 import com.example.android.fistconnect.models.Player;
 import com.example.android.fistconnect.utils.GestureDetector;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,8 +40,10 @@ public class GameActivity extends AppCompatActivity {
     private String currentUserId;
     private String enemyId;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference databasePunchReference;
+    private DatabaseReference databaseReference;
+    private DatabaseReference matchReference;
+    private DatabaseReference punchReference;
+    private DatabaseReference isOverReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,59 +54,19 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         currentMatch = (Match) getIntent().getSerializableExtra("match_information");
-
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Toast.makeText(this, currentMatch.getPlayer2().getUserId(), Toast.LENGTH_SHORT).show();
 
-        databasePunchReference = databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).child("lastPunch");
-        DatabaseReference isOverRef = databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).child("isOver");
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        if (currentUserId.equals(currentMatch.getPlayer1().getUserId())) {
-            enemyId = currentMatch.getPlayer2().getUserId();
-        } else {
-            enemyId = currentMatch.getPlayer1().getUserId();
-        }
+        createDatabaseReferences();
+        setEnemyId();
 
         //initiateSensorsForGame();
-
         //gameOn();
 
-        // This is the Beginning player
-        if (currentMatch.getPlayer1().getUserId().equals(currentUserId)) {
-            firstPunch();
-            currentMatch.lastPunch = new LastPunch(currentUserId, moveMadeByFirstPlayer);
-            databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).setValue(currentMatch);
-        }
+        makeFirstMoveIfNeeded();
+        setListenerForNewPunch();
 
-
-        databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    if (dataSnapshot.getValue(Match.class).hasPunched && !dataSnapshot.getValue(Match.class).lastPunch.userID.equals(currentUserId)) {
-                        responsePunch();
-                        if (hasFailed) {
-                            currentMatch.setIsOver(true);
-                            currentMatch.setWinnerId(enemyId);
-                            DatabaseReference matchPositionRef = FirebaseDatabase.getInstance().getReference().child("match").child(currentMatch.getPlayer2().getUserId());
-                            matchPositionRef.setValue(currentMatch);
-                        } else {
-                            LastPunch lastPunch = new LastPunch(currentUserId, moveMadeByFirstPlayer);
-                            databasePunchReference.setValue(lastPunch);
-                        }
-                    }
-                } catch (NullPointerException ex) {
-                    Toast.makeText(GameActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-
-        isOverRef.addValueEventListener(new ValueEventListener() {
+        isOverReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue(Boolean.class)) {
@@ -116,9 +79,66 @@ public class GameActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
+
+    private void createDatabaseReferences() {
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        matchReference = databaseReference.child("match").child(currentMatch.getPlayer2().getUserId());
+        punchReference = databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).child("lastPunch");
+        isOverReference = databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).child("isOver");
+    }
+
+    private void setEnemyId() {
+        if (currentUserId.equals(currentMatch.getPlayer1().getUserId())) {
+            enemyId = currentMatch.getPlayer2().getUserId();
+        } else {
+            enemyId = currentMatch.getPlayer1().getUserId();
+        }
+    }
+
+    private void makeFirstMoveIfNeeded() {
+        if (!currentMatch.getPlayer1().getUserId().equals(enemyId)) {
+            //firstPunch();
+            currentMatch.setLastPunch(new LastPunch(currentUserId, MoveBy.FIRST_PLAYER));
+            currentMatch.setHasPunched(true);
+            matchReference.setValue(currentMatch);
+        }
+    }
+
+    private void setListenerForNewPunch() {
+        matchReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                try {
+                    Match updatedMatch = dataSnapshot.getValue(Match.class);
+
+                    if (updatedMatch.isHasPunched() && updatedMatch.getLastPunch().getUserID().equals(enemyId)) {
+//                        responsePunch();
+
+                        if (hasFailed) {
+                            currentMatch.setOver(true);
+                            currentMatch.setWinnerId(enemyId);
+                            matchReference.setValue(currentMatch);
+
+                        } else {
+                            LastPunch lastPunch = new LastPunch(currentUserId, MoveBy.FIRST_PLAYER);
+                            punchReference.setValue(lastPunch);
+                        }
+                    }
+
+                } catch (NullPointerException ex) {
+                    Toast.makeText(GameActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
 
     public void initiateSensorsForGame() {
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);

@@ -7,13 +7,29 @@ import java.io.Serializable;
  */
 
 public class LastPunch implements Serializable{
-    public String userID;
-    public int lastPunch;
+    private String userID;
+    private MoveBy userRole;
 
-    public LastPunch(String uId, int lastPunch) {
+    public LastPunch(String uId, MoveBy userRole) {
         userID = uId;
-        this.lastPunch = lastPunch;
+        this.userRole = userRole;
     }
 
     public LastPunch(){}
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public MoveBy getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(MoveBy userRole) {
+        this.userRole = userRole;
+    }
 }
