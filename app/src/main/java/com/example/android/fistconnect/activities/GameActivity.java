@@ -2,19 +2,18 @@ package com.example.android.fistconnect.activities;
 
 import android.content.Context;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.TextView;
-import android.content.Intent;
 import android.widget.Toast;
 
-import com.example.android.fistconnect.utils.GestureDetector;
-import com.example.android.fistconnect.models.Match;
 import com.example.android.fistconnect.R;
 import com.example.android.fistconnect.models.LastPunch;
+import com.example.android.fistconnect.models.Match;
 import com.example.android.fistconnect.models.Player;
+import com.example.android.fistconnect.utils.GestureDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,14 +23,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class GameActivity extends AppCompatActivity {
     private Match currentMatch;
-
     private Player firstPlayer;
     private Player secondPlayer;
 
     private GestureDetector gestureDetector;
     private SensorManager mSensorManager;
     private boolean hasSensors;
-
     private boolean hasGestureHappened = false;
 
     private int moveMadeByFirstPlayer;
@@ -41,8 +38,9 @@ public class GameActivity extends AppCompatActivity {
     private Boolean hasFailed = false;
     private String currentUserId;
     private String enemyId;
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference databasePunchReference;
+
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference databasePunchReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +50,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        Intent getIntent = getIntent();
-        currentMatch = (Match) getIntent.getSerializableExtra("match_information");
+        currentMatch = (Match) getIntent().getSerializableExtra("match_information");
 
         Toast.makeText(this, currentMatch.getPlayer2().getUserId(), Toast.LENGTH_SHORT).show();
 
@@ -72,10 +69,9 @@ public class GameActivity extends AppCompatActivity {
         //gameOn();
 
         // This is the Beginning player
-        if (currentMatch.getPlayer1().getUserId() == currentUserId) {
+        if (currentMatch.getPlayer1().getUserId().equals(currentUserId)) {
             firstPunch();
-            LastPunch lastPunch = new LastPunch(currentUserId, moveMadeByFirstPlayer);
-            currentMatch.lastPunch = lastPunch;
+            currentMatch.lastPunch = new LastPunch(currentUserId, moveMadeByFirstPlayer);
             databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).setValue(currentMatch);
         }
 
@@ -96,7 +92,7 @@ public class GameActivity extends AppCompatActivity {
                             databasePunchReference.setValue(lastPunch);
                         }
                     }
-                } catch (NullPointerException ex){
+                } catch (NullPointerException ex) {
                     Toast.makeText(GameActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -163,7 +159,7 @@ public class GameActivity extends AppCompatActivity {
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         gestureDetector.initiateSensors(mSensorManager, hasSensors);
 
-        if(gestureDetector.hasGestureHappened()){
+        if (gestureDetector.hasGestureHappened()) {
             Toast.makeText(this, "Gesture happened", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "nohapeno", Toast.LENGTH_SHORT).show();
