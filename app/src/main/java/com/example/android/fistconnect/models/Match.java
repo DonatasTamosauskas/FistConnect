@@ -1,4 +1,7 @@
-package com.example.android.fistconnect;
+package com.example.android.fistconnect.models;
+
+import com.example.android.fistconnect.models.LastPunch;
+import com.example.android.fistconnect.models.Player;
 
 import java.io.Serializable;
 
@@ -9,13 +12,13 @@ import java.io.Serializable;
 
 public class Match implements Serializable {
 
-    Player player1;
-    Player player2;
-    String winnerId;
-    Boolean hasStarted = false;
-    Boolean isOver = false;
+    private Player player1;
+    private Player player2;
+    private String winnerId;
+    private Boolean hasStarted = false;
+    private Boolean isOver = false;
     public boolean hasPunched = false;
-    public  LastPunch lastPunch;
+    public LastPunch lastPunch;
 
     public Match() {
         player1 = new Player();

@@ -1,12 +1,16 @@
-package com.example.android.fistconnect;
+package com.example.android.fistconnect.activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.fistconnect.models.Match;
+import com.example.android.fistconnect.R;
+import com.example.android.fistconnect.models.CurrentUser;
+import com.example.android.fistconnect.models.Enemy;
+import com.example.android.fistconnect.models.Player;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

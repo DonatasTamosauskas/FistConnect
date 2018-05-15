@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/playerlistp"
-    tools:context="com.example.android.fistconnect.ListActivity">
+    tools:context="com.example.android.fistconnect.activities.ListActivity">
 
     <ImageView
         android:layout_width="match_parent"

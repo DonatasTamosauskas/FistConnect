@@ -1,4 +1,4 @@
-package com.example.android.fistconnect;
+package com.example.android.fistconnect.activities;
 
 import android.content.Context;
 import android.hardware.SensorManager;
@@ -10,6 +10,11 @@ import android.widget.TextView;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.example.android.fistconnect.utils.GestureDetector;
+import com.example.android.fistconnect.models.Match;
+import com.example.android.fistconnect.R;
+import com.example.android.fistconnect.models.LastPunch;
+import com.example.android.fistconnect.models.Player;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,7 +72,7 @@ public class GameActivity extends AppCompatActivity {
         //gameOn();
 
         // This is the Beginning player
-        if (currentMatch.player1.getUserId() == currentUserId) {
+        if (currentMatch.getPlayer1().getUserId() == currentUserId) {
             firstPunch();
             LastPunch lastPunch = new LastPunch(currentUserId, moveMadeByFirstPlayer);
             currentMatch.lastPunch = lastPunch;

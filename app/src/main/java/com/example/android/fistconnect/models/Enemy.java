@@ -1,4 +1,4 @@
-package com.example.android.fistconnect;
+package com.example.android.fistconnect.models;
 
 import java.io.Serializable;
 

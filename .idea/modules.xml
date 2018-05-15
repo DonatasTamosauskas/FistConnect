@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FistConnect.iml" filepath="$PROJECT_DIR$/FistConnect.iml" />
-      <module fileurl="file://C:\Users\Domantas\Desktop\Fist\FistConnect\.idea\FistConnect.iml" filepath="C:\Users\Domantas\Desktop\Fist\FistConnect\.idea\FistConnect.iml" />
-      <module fileurl="file://D:\FistConnect\FistConnect.iml" filepath="D:\FistConnect\FistConnect.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

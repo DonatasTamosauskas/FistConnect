@@ -1,4 +1,4 @@
-package com.example.android.fistconnect;
+package com.example.android.fistconnect.models;
 
 import java.io.Serializable;
 
@@ -10,12 +10,10 @@ public class LastPunch implements Serializable{
     public String userID;
     public int lastPunch;
 
-    LastPunch(String uId, int lastPunch) {
+    public LastPunch(String uId, int lastPunch) {
         userID = uId;
         this.lastPunch = lastPunch;
     }
 
-    LastPunch(){
-
-    };
+    public LastPunch(){}
 }

@@ -1,4 +1,4 @@
-package com.example.android.fistconnect;
+package com.example.android.fistconnect.utils;
 
 /**
  * Created by julius on 2018-03-04.

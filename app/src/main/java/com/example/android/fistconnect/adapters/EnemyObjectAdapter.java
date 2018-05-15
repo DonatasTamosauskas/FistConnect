@@ -1,4 +1,4 @@
-package com.example.android.fistconnect;
+package com.example.android.fistconnect.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.fistconnect.R;
+import com.example.android.fistconnect.models.Enemy;
 
 import java.util.ArrayList;
 
