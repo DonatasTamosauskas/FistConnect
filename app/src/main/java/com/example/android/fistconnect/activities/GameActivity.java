@@ -31,7 +31,7 @@ public class GameActivity extends AppCompatActivity {
     private int moveMadeByFirstPlayer;
     private int moveMadeBySecondPlayer;
     private Boolean hasFailed = false;
-    
+
 
     private Match currentMatch;
     private String currentUserId;
@@ -66,7 +66,9 @@ public class GameActivity extends AppCompatActivity {
         isOverReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue(Boolean.class)) {
+                Boolean isOver = dataSnapshot.getValue(Boolean.class);
+
+                if (isOver != null && isOver) {
                     Toast.makeText(GameActivity.this, "Game Over", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -16,7 +16,7 @@ public class Match implements Serializable {
     private Player player2;
     private String winnerId;
     private Boolean hasStarted = false;
-    private Boolean isOver = false;
+    private Boolean over = false;
     private boolean hasPunched = false;
     private LastPunch lastPunch;
 
@@ -55,11 +55,11 @@ public class Match implements Serializable {
     }
 
     public Boolean getOver() {
-        return isOver;
+        return over;
     }
 
     public void setOver(Boolean over) {
-        isOver = over;
+        this.over = over;
     }
 
     public boolean isHasPunched() {
