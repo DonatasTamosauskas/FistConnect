@@ -22,11 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 public class MatchActivity extends AppCompatActivity {
 
     private FirebaseUser currentUser;
-    private CurrentUser user = new CurrentUser();
-    private Match match = new Match();
-    private Player host = new Player();
-    private Player guest = new Player();
+    private Enemy enemy;
 
+    private Match match;
+    private Player host;
+    private Player guest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,32 +35,11 @@ public class MatchActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-        Intent getIntent = getIntent();
-        Enemy enemy = (Enemy) getIntent.getSerializableExtra("enemy_information");
+
+        enemy = (Enemy) getIntent().getSerializableExtra("enemy_information");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String userID = currentUser.getUid();
-        /*myRef = FirebaseDatabase.getInstance().getReference("users");
 
-        myRef.child(userID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                user =  snapshot.getValue(CurrentUser.class);
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
-
-
-        host.setUserId(currentUser.getUid());
-        host.setUsername(currentUser.getDisplayName());
-
-        guest.setUsername(enemy.username);
-        guest.setUserId(enemy.userID);
-        match.setPlayer1(host);
-        match.setWinnerId(host.getUserId());
-        match.setPlayer2(guest);
+        setMachInformation();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());
         databaseReference.setValue(match);
@@ -84,5 +63,21 @@ public class MatchActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setMachInformation(){
+        match = new Match();
+        host = new Player();
+        guest = new Player();
+
+        host.setUserId(currentUser.getUid());
+        host.setUsername(currentUser.getDisplayName());
+
+        guest.setUsername(enemy.username);
+        guest.setUserId(enemy.userID);
+
+        match.setPlayer1(host);
+        match.setWinnerId(host.getUserId());
+        match.setPlayer2(guest);
     }
 }
