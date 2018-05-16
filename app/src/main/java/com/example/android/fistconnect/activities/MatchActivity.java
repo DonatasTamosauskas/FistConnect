@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.fistconnect.R;
@@ -44,7 +45,7 @@ public class MatchActivity extends AppCompatActivity {
         currentMatchReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());
         currentMatchReference.setValue(match);
 
-        Toast.makeText(this, guest.getUsername(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, guest.getUsername(), Toast.LENGTH_SHORT).show();
         addListenerForMatchHasStartedEvent();
 
     }
@@ -70,7 +71,11 @@ public class MatchActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.getValue(Boolean.class)) {
+                Boolean hasStarted = dataSnapshot.getValue(Boolean.class);
+
+                if (hasStarted != null && hasStarted) {
+                    Toast.makeText(MatchActivity.this, "Loop in match activity", Toast.LENGTH_SHORT).show();
+
                     Intent matchIntent = new Intent(MatchActivity.this, GameActivity.class);
                     matchIntent.putExtra("match_information", match);
                     startActivity(matchIntent);

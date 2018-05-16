@@ -52,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
 
         currentMatch = (Match) getIntent().getSerializableExtra("match_information");
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Toast.makeText(this, currentMatch.getPlayer2().getUserId(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, currentMatch.getPlayer2().getUserId(), Toast.LENGTH_SHORT).show();
 
         createDatabaseReferences();
         setEnemyId();
@@ -60,24 +60,10 @@ public class GameActivity extends AppCompatActivity {
         //initiateSensorsForGame();
         //gameOn();
 
+        //TODO: Match activity listener together with makeFirstMoveIFNeeded create intent loop
         makeFirstMoveIfNeeded();
-        setListenerForNewPunch();
-
-        isOverReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Boolean isOver = dataSnapshot.getValue(Boolean.class);
-
-                if (isOver != null && isOver) {
-                    Toast.makeText(GameActivity.this, "Game Over", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
+        //setListenerForNewPunch();
+        //setListenerForEndGame();
     }
 
     private void createDatabaseReferences() {
@@ -128,6 +114,24 @@ public class GameActivity extends AppCompatActivity {
 
                 } catch (NullPointerException ex) {
                     Toast.makeText(GameActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void setListenerForEndGame() {
+        isOverReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Boolean isOver = dataSnapshot.getValue(Boolean.class);
+
+                if (isOver != null && isOver) {
+                    Toast.makeText(GameActivity.this, "Game Over", Toast.LENGTH_SHORT).show();
                 }
             }
 
