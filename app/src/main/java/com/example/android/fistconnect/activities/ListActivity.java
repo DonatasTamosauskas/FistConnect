@@ -33,6 +33,7 @@ public class ListActivity extends AppCompatActivity {
     private Enemy enemy;
     private ListView enemyListView;
     private ArrayList<Enemy> arrayOfEnemies;
+    private ValueEventListener matchRequestListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +115,11 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void setListenerForMachRequest() {
-        matchReference.child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+        matchRequestListener = matchReference.child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if ((match = snapshot.getValue(Match.class)) != null) {
+                    matchReference.child(currentUser.getUid()).removeEventListener(matchRequestListener);
                     matchReference.child(currentUser.getUid()).child("hasStarted").setValue(true);
 
                     Intent gameActivity = new Intent(ListActivity.this, GameActivity.class);

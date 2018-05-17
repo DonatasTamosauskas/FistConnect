@@ -60,7 +60,6 @@ public class GameActivity extends AppCompatActivity {
         //initiateSensorsForGame();
         //gameOn();
 
-        //TODO: Match activity listener together with makeFirstMoveIFNeeded create intent loop
         makeFirstMoveIfNeeded();
         //setListenerForNewPunch();
         //setListenerForEndGame();

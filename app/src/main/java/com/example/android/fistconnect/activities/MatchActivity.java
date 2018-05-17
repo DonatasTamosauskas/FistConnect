@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 public class MatchActivity extends AppCompatActivity {
 
     private DatabaseReference currentMatchReference;
+    private ValueEventListener matchHasStartedListener;
     private FirebaseUser currentUser;
     private Enemy enemy;
 
@@ -67,7 +68,7 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     private void addListenerForMatchHasStartedEvent() {
-        currentMatchReference.child("hasStarted").addValueEventListener(new ValueEventListener() {
+        matchHasStartedListener = currentMatchReference.child("hasStarted").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -75,6 +76,7 @@ public class MatchActivity extends AppCompatActivity {
 
                 if (hasStarted != null && hasStarted) {
                     Toast.makeText(MatchActivity.this, "Loop in match activity", Toast.LENGTH_SHORT).show();
+                    currentMatchReference.child("hasStarted").removeEventListener(matchHasStartedListener);
 
                     Intent matchIntent = new Intent(MatchActivity.this, GameActivity.class);
                     matchIntent.putExtra("match_information", match);
