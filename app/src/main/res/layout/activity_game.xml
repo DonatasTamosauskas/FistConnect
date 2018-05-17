@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,9 +8,43 @@
     tools:context="com.example.android.fistconnect.activities.GameActivity">
 
     <TextView
-        android:id="@+id/player_one_go"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:id="@+id/your_turn_text"
+        android:layout_above="@id/punch_button"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your turn, weakling"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/punch_button"
+        android:layout_above="@id/block_button"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PUNCH"
+        android:onClick="punchButtonClick"/>
+
+    <Button
+        android:id="@+id/block_button"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BLOCK"
+        android:onClick="blockButtonClick"/>
+
+    <Button
+        android:id="@+id/low_blow_button"
+        android:layout_below="@id/block_button"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOW BLOW"
+        android:onClick="lowBlowButtonClick"/>
 
 
-</LinearLayout>
+</RelativeLayout>

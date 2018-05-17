@@ -1,8 +1,5 @@
 package com.example.android.fistconnect.models;
 
-import com.example.android.fistconnect.models.LastPunch;
-import com.example.android.fistconnect.models.Player;
-
 import java.io.Serializable;
 
 /**
@@ -20,7 +17,8 @@ public class Match implements Serializable {
     private boolean hasPunched = false;
     private LastPunch lastPunch;
 
-    public Match() {}
+    public Match() {
+    }
 
     public Player getPlayer1() {
         return player1;

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +28,6 @@ public class GameActivity extends AppCompatActivity {
     private GestureDetector gestureDetector;
     private SensorManager mSensorManager;
     private boolean hasSensors;
-    private boolean hasGestureHappened = false;
-
     private int moveMadeByFirstPlayer;
     private int moveMadeBySecondPlayer;
     private Boolean hasFailed = false;
@@ -42,6 +42,11 @@ public class GameActivity extends AppCompatActivity {
     private DatabaseReference punchReference;
     private DatabaseReference isOverReference;
 
+    private TextView yourTurnText;
+    private Button punchButton;
+    private Button blockButton;
+    private Button lowBlowButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ActionBar actionBar = getSupportActionBar();
@@ -52,16 +57,16 @@ public class GameActivity extends AppCompatActivity {
 
         currentMatch = (Match) getIntent().getSerializableExtra("match_information");
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        Toast.makeText(this, currentMatch.getPlayer2().getUserId(), Toast.LENGTH_SHORT).show();
 
         createDatabaseReferences();
         setEnemyId();
+        getViewElementReferences();
 
         //initiateSensorsForGame();
         //gameOn();
 
         makeFirstMoveIfNeeded();
-        //setListenerForNewPunch();
+//        setListenerForNewPunch();
         //setListenerForEndGame();
     }
 
@@ -80,14 +85,59 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void getViewElementReferences() {
+        yourTurnText = findViewById(R.id.your_turn_text);
+        punchButton = findViewById(R.id.punch_button);
+        blockButton = findViewById(R.id.block_button);
+        lowBlowButton = findViewById(R.id.low_blow_button);
+
+        changeButtonClickability(false);
+        }
+
+    private void changeButtonClickability(boolean enabled) {
+        punchButton.setEnabled(enabled);
+        blockButton.setEnabled(enabled);
+        lowBlowButton.setEnabled(enabled);
+    }
+
     private void makeFirstMoveIfNeeded() {
         if (!currentMatch.getPlayer1().getUserId().equals(enemyId)) {
             //firstPunch();
-            currentMatch.setLastPunch(new LastPunch(currentUserId, HitType.PUNCH));
-            currentMatch.setHasPunched(true);
-            matchReference.setValue(currentMatch);
+            recordPunch();
         }
     }
+
+    private void recordPunch() {
+        yourTurnText.setVisibility(View.VISIBLE);
+        changeButtonClickability(true);
+    }
+
+    public void punchButtonClick(View view) {
+        changeButtonClickability(false);
+        yourTurnText.setVisibility(View.INVISIBLE);
+        setLastPunchInDatabase(HitType.PUNCH);
+    }
+
+    public void blockButtonClick(View view) {
+        changeButtonClickability(false);
+        yourTurnText.setVisibility(View.INVISIBLE);
+        setLastPunchInDatabase(HitType.BLOCK);
+    }
+
+    public void lowBlowButtonClick(View view) {
+        changeButtonClickability(false);
+        yourTurnText.setVisibility(View.INVISIBLE);
+        setLastPunchInDatabase(HitType.LOW_BLOW);
+    }
+
+    private void setLastPunchInDatabase(HitType hitType) {
+        currentMatch.setLastPunch(new LastPunch(currentUserId, hitType));
+        matchReference.child("lastPunch").setValue(currentMatch.getLastPunch());
+//        currentMatch.setHasPunched(true);
+//        matchReference.setValue(currentMatch);
+    }
+
+
 
     private void setListenerForNewPunch() {
         matchReference.addValueEventListener(new ValueEventListener() {
@@ -141,7 +191,6 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-
     public void initiateSensorsForGame() {
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
 
@@ -191,8 +240,8 @@ public class GameActivity extends AppCompatActivity {
 
 
     public void responsePunch() {
-        TextView textView = (TextView) findViewById(R.id.player_one_go);
-        textView.setText("Player two go!");
+//        TextView textView = (TextView) findViewById(R.id.player_one_go);
+//        textView.setText("Player two go!");
 
         new CountDownTimer(3000, 100) {
             public void onTick(long millisUntilFinished) {

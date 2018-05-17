@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.fistconnect.R;
@@ -42,13 +43,8 @@ public class MatchActivity extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         setMachInformation();
-
-        currentMatchReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());
-        currentMatchReference.setValue(match);
-
-//        Toast.makeText(this, guest.getUsername(), Toast.LENGTH_SHORT).show();
+        setViewText();
         addListenerForMatchHasStartedEvent();
-
     }
 
     private void setMachInformation() {
@@ -65,6 +61,14 @@ public class MatchActivity extends AppCompatActivity {
         match.setPlayer1(host);
         match.setWinnerId(host.getUserId());
         match.setPlayer2(guest);
+
+        currentMatchReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());
+        currentMatchReference.setValue(match);
+    }
+
+    private void setViewText() {
+        TextView enemyUsername = findViewById(R.id.match_loading_player_name);
+        enemyUsername.setText(enemy.username);
     }
 
     private void addListenerForMatchHasStartedEvent() {
@@ -75,13 +79,11 @@ public class MatchActivity extends AppCompatActivity {
                 Boolean hasStarted = dataSnapshot.getValue(Boolean.class);
 
                 if (hasStarted != null && hasStarted) {
-                    Toast.makeText(MatchActivity.this, "Loop in match activity", Toast.LENGTH_SHORT).show();
                     currentMatchReference.child("hasStarted").removeEventListener(matchHasStartedListener);
 
                     Intent matchIntent = new Intent(MatchActivity.this, GameActivity.class);
                     matchIntent.putExtra("match_information", match);
                     startActivity(matchIntent);
-                    //Toast.makeText(MatchActivity.this, "something something dark side", Toast.LENGTH_SHORT).show();
                 }
 
             }
