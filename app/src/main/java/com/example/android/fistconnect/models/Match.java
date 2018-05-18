@@ -2,21 +2,17 @@ package com.example.android.fistconnect.models;
 
 import java.io.Serializable;
 
-/**
- * Created by Asus on 3/3/2018.
- */
-
-
 public class Match implements Serializable {
 
     private Player player1;
     private Player player2;
-    private String winnerId;
-    private Boolean hasStarted = false;
-    private Boolean over = false;
+    private Boolean hasStarted;
+    private Boolean over;
     private LastPunch lastPunch;
 
     public Match() {
+        hasStarted = false;
+        over = false;
     }
 
     public Player getPlayer1() {
@@ -33,14 +29,6 @@ public class Match implements Serializable {
 
     public void setPlayer2(Player player2) {
         this.player2 = player2;
-    }
-
-    public String getWinnerId() {
-        return winnerId;
-    }
-
-    public void setWinnerId(String winnerId) {
-        this.winnerId = winnerId;
     }
 
     public Boolean getHasStarted() {

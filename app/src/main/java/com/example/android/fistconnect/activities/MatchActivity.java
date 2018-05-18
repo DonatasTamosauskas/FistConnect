@@ -59,7 +59,6 @@ public class MatchActivity extends AppCompatActivity {
         guest.setUserId(enemy.userID);
 
         match.setPlayer1(host);
-        match.setWinnerId(host.getUserId());
         match.setPlayer2(guest);
 
         currentMatchReference = FirebaseDatabase.getInstance().getReference().child("match").child(guest.getUserId());

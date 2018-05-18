@@ -97,3 +97,231 @@ public class GestureDetector implements SensorEventListener {
         }
     }
 }
+
+/*
+imported from game activity:
+
+    private GestureDetector gestureDetector;
+    private SensorManager mSensorManager;
+    private boolean hasSensors;
+    private int moveMadeByFirstPlayer;
+    private int moveMadeBySecondPlayer;
+    private Boolean hasFailed = false;
+
+
+
+
+    //    public void initiateSensorsForGame() {
+//        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+//
+//        gestureDetector.initiateSensors(mSensorManager, hasSensors);
+//        if (!hasSensors) {
+//            //Do something if sensors ar MIA
+//        }
+//    }
+//
+//
+//    public void firstPunch() {
+//        /*TextView textView = (TextView) findViewById(R.id.player_one_go);
+//        textView.setText("Player one go!");
+//
+//        new CountDownTimer(3000, 100) {
+//            public void onTick(long millisUntilFinished) {
+//                if (gestureDetector.hasGestureHappened()) {
+//                    if (gestureDetector.getGestureType() == 1) {
+//                        moveMadeByFirstPlayer = 1;
+//                    } else if (gestureDetector.getGestureType() == 2) {
+//                        moveMadeByFirstPlayer = 2;
+//                    } else {
+//                        moveMadeByFirstPlayer = 3;
+//                    }
+//
+//                    currentMatch.hasPunched = true;
+//                    Toast.makeText(GameActivity.this, "First Punch made", Toast.LENGTH_SHORT).show();
+//                }
+//                Toast.makeText(GameActivity.this, "no made", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            public void onFinish() {
+//                //firstPunch();
+//            }
+//        };*/
+//        gestureDetector = new GestureDetector();
+//        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+//        gestureDetector.initiateSensors(mSensorManager, hasSensors);
+//
+//        if (gestureDetector.hasGestureHappened()) {
+//            Toast.makeText(this, "Gesture happened", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "nohapeno", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
+//
+//
+//    public void responsePunch() {
+////        TextView textView = (TextView) findViewById(R.id.player_one_go);
+////        textView.setText("Player two go!");
+//
+//        new CountDownTimer(3000, 100) {
+//            public void onTick(long millisUntilFinished) {
+//                if (gestureDetector.hasGestureHappened()) {
+//                    if (gestureDetector.getGestureType() == 1) {
+//                        moveMadeBySecondPlayer = 1;
+//                    } else if (gestureDetector.getGestureType() == 2) {
+//                        moveMadeBySecondPlayer = 2;
+//                    } else {
+//                        moveMadeBySecondPlayer = 3;
+//                    }
+//                }
+//            }
+//
+//            public void onFinish() {
+//                if (!gestureDetector.hasGestureHappened()) {
+//
+//                    hasFailed = true;
+//                } else {
+//                    determineIsMoveSuccesful();
+//                }
+//            }
+//        };
+//    }
+//
+//    public void determineIsMoveSuccesful() {
+//
+//        if (moveMadeByFirstPlayer == 1) {
+//            if (moveMadeBySecondPlayer == 3) {
+//                hasFailed = false;
+//            } else {
+//                hasFailed = true;
+//            }
+//        }
+//
+//        if (moveMadeByFirstPlayer == 2) {
+//            if (moveMadeBySecondPlayer == 1) {
+//                hasFailed = false;
+//            } else {
+//                hasFailed = true;
+//            }
+//        }
+//
+//        if (moveMadeByFirstPlayer == 3) {
+//            if (moveMadeBySecondPlayer == 2) {
+//                hasFailed = false;
+//            } else {
+//                hasFailed = true;
+//            }
+//        }
+//    }
+//}
+    /*public void gameOn() {
+
+        while (firstPlayer.health != 0 || secondPlayer.health != 0) {
+
+            if (peckingOrder) {
+                firstPunch(firstPlayer);
+                if (!peckingOrder) {
+
+                    //Send first move to database.
+                    LastPunch lastPunch = new LastPunch(firstPlayer, moveMadeByFirstPlayer);
+
+                    databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).child("lastPunch").setValue(lastPunch);
+                    //Fetch first move from database.
+
+
+                    //Response punch.
+                    responsePunch(secondPlayer);
+                }
+
+            } else {
+                firstPunch(secondPlayer);
+                if (!peckingOrder) {
+                    responsePunch(firstPlayer);
+                }
+            }
+        }
+    }*/
+
+    /*public void responsePunch(final Player secondPlayer) {
+        TextView textView = (TextView) findViewById(R.id.player_one_go);
+        textView.setText("Player two go!");
+
+        new CountDownTimer(3000, 100) {
+            public void onTick(long millisUntilFinished) {
+                if (gestureDetector.hasGestureHappened()) {
+                    if (gestureDetector.getGestureType() == 1) {
+                        moveMadeBySecondPlayer = 1;
+                    } else if (gestureDetector.getGestureType() == 2) {
+                        moveMadeBySecondPlayer = 2;
+                    } else {
+                        moveMadeBySecondPlayer = 3;
+                    }
+                }
+            }
+
+            public void onFinish() {
+                if (!gestureDetector.hasGestureHappened()) {
+                    secondPlayer.setHealth(secondPlayer.getHealth() - 1);
+                    peckingOrder = false;
+                } else {
+                    determineIsMoveSuccesful();
+                    if (responseLoop) {
+                        moveMadeByFirstPlayer = moveMadeBySecondPlayer;
+                        responsePunch(firstPlayer);
+                    }
+                }
+            }
+        };
+    }*/
+
+    /*
+        while (firstPlayer.health != 0 || secondPlayer.health != 0) {
+            TextView textView = (TextView) findViewById(R.id.player_one_go);
+            textView.setText("Player one go!");
+
+            new CountDownTimer(3000, 100) {
+                public void onTick(long millisUntilFinished) {
+                    if(gestureDetector.hasGestureHappened()) {
+                        if(gestureDetector.getGestureType() == 1) {
+                            moveMadeByLastPlayer = 1;
+                        } else if(gestureDetector.getGestureType() == 2) {
+                            moveMadeByLastPlayer = 2;
+                        } else {
+                            moveMadeByLastPlayer = 3;
+                        }
+                    }
+                }
+
+                public void onFinish() {
+                    if(!gestureDetector.hasGestureHappened()) {
+                        firstPlayer.health--;
+                    }
+                }
+            };
+
+            textView.setText("Player two go!");
+
+            new CountDownTimer(3000, 100) {
+                public void onTick(long millisUntilFinished) {
+                    if(gestureDetector.hasGestureHappened()) {
+                        if(gestureDetector.getGestureType() == 1) {
+                            moveMadeBySecondPlayer = 1;
+                        } else if(gestureDetector.getGestureType() == 2) {
+                            moveMadeBySecondPlayer = 2;
+                        } else {
+                            moveMadeBySecondPlayer = 3;
+                        }
+
+                        //Function to decide what to do.
+                        //punchLowBlowBlock();
+                    }
+                }
+
+                public void onFinish() {
+                    if(!gestureDetector.hasGestureHappened()) {
+                        secondPlayer.health--;
+                    }
+                }
+            };
+        }
+ */

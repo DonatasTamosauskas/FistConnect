@@ -1,9 +1,8 @@
 package com.example.android.fistconnect.activities;
 
-import android.content.Context;
-import android.hardware.SensorManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,7 +14,6 @@ import com.example.android.fistconnect.R;
 import com.example.android.fistconnect.models.HitType;
 import com.example.android.fistconnect.models.LastPunch;
 import com.example.android.fistconnect.models.Match;
-import com.example.android.fistconnect.utils.GestureDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,14 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class GameActivity extends AppCompatActivity {
-
-    private GestureDetector gestureDetector;
-    private SensorManager mSensorManager;
-    private boolean hasSensors;
-    private int moveMadeByFirstPlayer;
-    private int moveMadeBySecondPlayer;
-    private Boolean hasFailed = false;
-
 
     private Match currentMatch;
     private String currentUserId;
@@ -66,12 +56,9 @@ public class GameActivity extends AppCompatActivity {
         setEnemyId();
         getViewElementReferences();
 
-        //initiateSensorsForGame();
-        //gameOn();
-
         makeFirstMoveIfNeeded();
         setListenerForNewPunch();
-        //setListenerForEndGame();
+        setListenerForEndGame();
     }
 
     private void createDatabaseReferences() {
@@ -144,7 +131,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void setLastPunchInDatabase(HitType hitType) {
         currentMatch.setLastPunch(new LastPunch(currentUserId, hitType));
-        matchReference.child("lastPunch").setValue(currentMatch.getLastPunch());
+        punchReference.setValue(currentMatch.getLastPunch());
     }
 
     private void checkIfPunchIsCorrect(HitType hitType) {
@@ -163,11 +150,20 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void gameLostByCurrentPlayer() {
-        matchReference.child("lastPunch").removeEventListener(punchListener);
+        Toast.makeText(this, "You lost!", Toast.LENGTH_SHORT).show();
+        isOverReference.setValue(true);
+        gameOverRoutine();
+    }
+
+    private void gameOverRoutine() {
+        punchReference.removeEventListener(punchListener);
+        isOverReference.removeEventListener(gameOverListener);
+        matchReference.removeValue();
+        startListActivityAfterTime(2500);
     }
 
     private void setListenerForNewPunch() {
-        punchListener = matchReference.child("lastPunch").addValueEventListener(new ValueEventListener() {
+        punchListener = punchReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 LastPunch incomingPunch = dataSnapshot.getValue(LastPunch.class);
@@ -192,7 +188,8 @@ public class GameActivity extends AppCompatActivity {
                 Boolean isOver = dataSnapshot.getValue(Boolean.class);
 
                 if (isOver != null && isOver) {
-                    Toast.makeText(GameActivity.this, "Game Over", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GameActivity.this, "Game Over, you won!", Toast.LENGTH_SHORT).show();
+                    gameOverRoutine();
                 }
             }
 
@@ -203,217 +200,13 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    public void initiateSensorsForGame() {
-        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-
-        gestureDetector.initiateSensors(mSensorManager, hasSensors);
-        if (!hasSensors) {
-            //Do something if sensors ar MIA
-        }
-    }
-
-
-    public void firstPunch() {
-        /*TextView textView = (TextView) findViewById(R.id.player_one_go);
-        textView.setText("Player one go!");
-
-        new CountDownTimer(3000, 100) {
-            public void onTick(long millisUntilFinished) {
-                if (gestureDetector.hasGestureHappened()) {
-                    if (gestureDetector.getGestureType() == 1) {
-                        moveMadeByFirstPlayer = 1;
-                    } else if (gestureDetector.getGestureType() == 2) {
-                        moveMadeByFirstPlayer = 2;
-                    } else {
-                        moveMadeByFirstPlayer = 3;
-                    }
-
-                    currentMatch.hasPunched = true;
-                    Toast.makeText(GameActivity.this, "First Punch made", Toast.LENGTH_SHORT).show();
-                }
-                Toast.makeText(GameActivity.this, "no made", Toast.LENGTH_SHORT).show();
+    private void startListActivityAfterTime(int milliseconds) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent listActivityIntent = new Intent(GameActivity.this, ListActivity.class);
+                startActivity(listActivityIntent);
             }
-
-            public void onFinish() {
-                //firstPunch();
-            }
-        };*/
-        gestureDetector = new GestureDetector();
-        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-        gestureDetector.initiateSensors(mSensorManager, hasSensors);
-
-        if (gestureDetector.hasGestureHappened()) {
-            Toast.makeText(this, "Gesture happened", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "nohapeno", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-
-    public void responsePunch() {
-//        TextView textView = (TextView) findViewById(R.id.player_one_go);
-//        textView.setText("Player two go!");
-
-        new CountDownTimer(3000, 100) {
-            public void onTick(long millisUntilFinished) {
-                if (gestureDetector.hasGestureHappened()) {
-                    if (gestureDetector.getGestureType() == 1) {
-                        moveMadeBySecondPlayer = 1;
-                    } else if (gestureDetector.getGestureType() == 2) {
-                        moveMadeBySecondPlayer = 2;
-                    } else {
-                        moveMadeBySecondPlayer = 3;
-                    }
-                }
-            }
-
-            public void onFinish() {
-                if (!gestureDetector.hasGestureHappened()) {
-
-                    hasFailed = true;
-                } else {
-                    determineIsMoveSuccesful();
-                }
-            }
-        };
-    }
-
-    public void determineIsMoveSuccesful() {
-
-        if (moveMadeByFirstPlayer == 1) {
-            if (moveMadeBySecondPlayer == 3) {
-                hasFailed = false;
-            } else {
-                hasFailed = true;
-            }
-        }
-
-        if (moveMadeByFirstPlayer == 2) {
-            if (moveMadeBySecondPlayer == 1) {
-                hasFailed = false;
-            } else {
-                hasFailed = true;
-            }
-        }
-
-        if (moveMadeByFirstPlayer == 3) {
-            if (moveMadeBySecondPlayer == 2) {
-                hasFailed = false;
-            } else {
-                hasFailed = true;
-            }
-        }
+        }, milliseconds);
     }
 }
-    /*public void gameOn() {
-
-        while (firstPlayer.health != 0 || secondPlayer.health != 0) {
-
-            if (peckingOrder) {
-                firstPunch(firstPlayer);
-                if (!peckingOrder) {
-
-                    //Send first move to database.
-                    LastPunch lastPunch = new LastPunch(firstPlayer, moveMadeByFirstPlayer);
-
-                    databaseReference.child("match").child(currentMatch.getPlayer2().getUserId()).child("lastPunch").setValue(lastPunch);
-                    //Fetch first move from database.
-
-
-                    //Response punch.
-                    responsePunch(secondPlayer);
-                }
-
-            } else {
-                firstPunch(secondPlayer);
-                if (!peckingOrder) {
-                    responsePunch(firstPlayer);
-                }
-            }
-        }
-    }*/
-
-    /*public void responsePunch(final Player secondPlayer) {
-        TextView textView = (TextView) findViewById(R.id.player_one_go);
-        textView.setText("Player two go!");
-
-        new CountDownTimer(3000, 100) {
-            public void onTick(long millisUntilFinished) {
-                if (gestureDetector.hasGestureHappened()) {
-                    if (gestureDetector.getGestureType() == 1) {
-                        moveMadeBySecondPlayer = 1;
-                    } else if (gestureDetector.getGestureType() == 2) {
-                        moveMadeBySecondPlayer = 2;
-                    } else {
-                        moveMadeBySecondPlayer = 3;
-                    }
-                }
-            }
-
-            public void onFinish() {
-                if (!gestureDetector.hasGestureHappened()) {
-                    secondPlayer.setHealth(secondPlayer.getHealth() - 1);
-                    peckingOrder = false;
-                } else {
-                    determineIsMoveSuccesful();
-                    if (responseLoop) {
-                        moveMadeByFirstPlayer = moveMadeBySecondPlayer;
-                        responsePunch(firstPlayer);
-                    }
-                }
-            }
-        };
-    }*/
-
-    /*
-        while (firstPlayer.health != 0 || secondPlayer.health != 0) {
-            TextView textView = (TextView) findViewById(R.id.player_one_go);
-            textView.setText("Player one go!");
-
-            new CountDownTimer(3000, 100) {
-                public void onTick(long millisUntilFinished) {
-                    if(gestureDetector.hasGestureHappened()) {
-                        if(gestureDetector.getGestureType() == 1) {
-                            moveMadeByLastPlayer = 1;
-                        } else if(gestureDetector.getGestureType() == 2) {
-                            moveMadeByLastPlayer = 2;
-                        } else {
-                            moveMadeByLastPlayer = 3;
-                        }
-                    }
-                }
-
-                public void onFinish() {
-                    if(!gestureDetector.hasGestureHappened()) {
-                        firstPlayer.health--;
-                    }
-                }
-            };
-
-            textView.setText("Player two go!");
-
-            new CountDownTimer(3000, 100) {
-                public void onTick(long millisUntilFinished) {
-                    if(gestureDetector.hasGestureHappened()) {
-                        if(gestureDetector.getGestureType() == 1) {
-                            moveMadeBySecondPlayer = 1;
-                        } else if(gestureDetector.getGestureType() == 2) {
-                            moveMadeBySecondPlayer = 2;
-                        } else {
-                            moveMadeBySecondPlayer = 3;
-                        }
-
-                        //Function to decide what to do.
-                        //punchLowBlowBlock();
-                    }
-                }
-
-                public void onFinish() {
-                    if(!gestureDetector.hasGestureHappened()) {
-                        secondPlayer.health--;
-                    }
-                }
-            };
-        }
-        */

@@ -2,10 +2,6 @@ package com.example.android.fistconnect.models;
 
 import java.io.Serializable;
 
-/**
- * Created by Domantas on 2018-03-04.
- */
-
 public class LastPunch implements Serializable{
     private String userID;
     private HitType userRole;
