@@ -1,10 +1,13 @@
 package com.example.android.fistconnect.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +17,7 @@ import com.example.android.fistconnect.R;
 import com.example.android.fistconnect.models.HitType;
 import com.example.android.fistconnect.models.LastPunch;
 import com.example.android.fistconnect.models.Match;
+import com.example.android.fistconnect.utils.GestureDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +32,7 @@ public class GameActivity extends AppCompatActivity {
     private String enemyId;
     private Boolean isFirstPunch;
     private LastPunch lastPunch;
+    private GestureDetector gestureDetector;
 
     private DatabaseReference databaseReference;
     private DatabaseReference matchReference;
@@ -59,6 +64,8 @@ public class GameActivity extends AppCompatActivity {
         makeFirstMoveIfNeeded();
         setListenerForNewPunch();
         setListenerForEndGame();
+
+        initiateGestureDetector();
     }
 
     private void createDatabaseReferences() {
@@ -208,5 +215,11 @@ public class GameActivity extends AppCompatActivity {
                 startActivity(listActivityIntent);
             }
         }, milliseconds);
+    }
+
+    private void initiateGestureDetector() {
+        Log.i("", "Sensor change");
+        SensorManager sensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        gestureDetector = new GestureDetector(sensorManager);
     }
 }

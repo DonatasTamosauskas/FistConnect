@@ -8,11 +8,6 @@
     android:background="@drawable/playerlistp"
     tools:context="com.example.android.fistconnect.activities.ListActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:src="@drawable/opponent"/>
-
     <ListView
         android:id="@+id/display_currentUser"
         android:layout_width="match_parent"
@@ -21,6 +16,11 @@
 
     </ListView>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:src="@drawable/opponent"/>
+
     <ListView
         android:id="@+id/display_enemies"
         android:layout_width="match_parent"
@@ -28,7 +28,5 @@
         android:layout_height="wrap_content">
 
     </ListView>
-
-
 
 </LinearLayout>
