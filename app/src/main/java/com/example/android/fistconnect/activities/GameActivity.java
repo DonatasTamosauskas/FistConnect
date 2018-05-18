@@ -12,9 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.fistconnect.R;
+import com.example.android.fistconnect.models.HitType;
 import com.example.android.fistconnect.models.LastPunch;
 import com.example.android.fistconnect.models.Match;
-import com.example.android.fistconnect.models.HitType;
 import com.example.android.fistconnect.utils.GestureDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,11 +36,15 @@ public class GameActivity extends AppCompatActivity {
     private Match currentMatch;
     private String currentUserId;
     private String enemyId;
+    private Boolean isFirstPunch;
+    private LastPunch lastPunch;
 
     private DatabaseReference databaseReference;
     private DatabaseReference matchReference;
     private DatabaseReference punchReference;
     private DatabaseReference isOverReference;
+    private ValueEventListener punchListener;
+    private ValueEventListener gameOverListener;
 
     private TextView yourTurnText;
     private Button punchButton;
@@ -66,7 +70,7 @@ public class GameActivity extends AppCompatActivity {
         //gameOn();
 
         makeFirstMoveIfNeeded();
-//        setListenerForNewPunch();
+        setListenerForNewPunch();
         //setListenerForEndGame();
     }
 
@@ -92,7 +96,7 @@ public class GameActivity extends AppCompatActivity {
         lowBlowButton = findViewById(R.id.low_blow_button);
 
         changeButtonClickability(false);
-        }
+    }
 
     private void changeButtonClickability(boolean enabled) {
         punchButton.setEnabled(enabled);
@@ -102,8 +106,10 @@ public class GameActivity extends AppCompatActivity {
 
     private void makeFirstMoveIfNeeded() {
         if (!currentMatch.getPlayer1().getUserId().equals(enemyId)) {
-            //firstPunch();
+            isFirstPunch = true;
             recordPunch();
+        } else {
+            isFirstPunch = false;
         }
     }
 
@@ -115,54 +121,60 @@ public class GameActivity extends AppCompatActivity {
     public void punchButtonClick(View view) {
         changeButtonClickability(false);
         yourTurnText.setVisibility(View.INVISIBLE);
-        setLastPunchInDatabase(HitType.PUNCH);
+
+        if (isFirstPunch) setLastPunchInDatabase(HitType.PUNCH);
+        else checkIfPunchIsCorrect(HitType.PUNCH);
     }
 
     public void blockButtonClick(View view) {
         changeButtonClickability(false);
         yourTurnText.setVisibility(View.INVISIBLE);
-        setLastPunchInDatabase(HitType.BLOCK);
+
+        if (isFirstPunch) setLastPunchInDatabase(HitType.BLOCK);
+        else checkIfPunchIsCorrect(HitType.BLOCK);
     }
 
     public void lowBlowButtonClick(View view) {
         changeButtonClickability(false);
         yourTurnText.setVisibility(View.INVISIBLE);
-        setLastPunchInDatabase(HitType.LOW_BLOW);
+
+        if (isFirstPunch) setLastPunchInDatabase(HitType.LOW_BLOW);
+        else checkIfPunchIsCorrect(HitType.LOW_BLOW);
     }
 
     private void setLastPunchInDatabase(HitType hitType) {
         currentMatch.setLastPunch(new LastPunch(currentUserId, hitType));
         matchReference.child("lastPunch").setValue(currentMatch.getLastPunch());
-//        currentMatch.setHasPunched(true);
-//        matchReference.setValue(currentMatch);
     }
 
+    private void checkIfPunchIsCorrect(HitType hitType) {
+        if (lastPunch.getUserRole() == HitType.PUNCH) {
+            if (hitType != HitType.BLOCK) gameLostByCurrentPlayer();
+            else setLastPunchInDatabase(hitType);
 
+        } else if (lastPunch.getUserRole() == HitType.BLOCK) {
+            if (hitType != HitType.LOW_BLOW) gameLostByCurrentPlayer();
+            else setLastPunchInDatabase(hitType);
+
+        } else {
+            if (hitType != HitType.PUNCH) gameLostByCurrentPlayer();
+            else setLastPunchInDatabase(hitType);
+        }
+    }
+
+    private void gameLostByCurrentPlayer() {
+        matchReference.child("lastPunch").removeEventListener(punchListener);
+    }
 
     private void setListenerForNewPunch() {
-        matchReference.addValueEventListener(new ValueEventListener() {
+        punchListener = matchReference.child("lastPunch").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                LastPunch incomingPunch = dataSnapshot.getValue(LastPunch.class);
 
-                try {
-                    Match updatedMatch = dataSnapshot.getValue(Match.class);
-
-                    if (updatedMatch.isHasPunched() && updatedMatch.getLastPunch().getUserID().equals(enemyId)) {
-//                        responsePunch();
-
-                        if (hasFailed) {
-                            currentMatch.setOver(true);
-                            currentMatch.setWinnerId(enemyId);
-                            matchReference.setValue(currentMatch);
-
-                        } else {
-                            LastPunch lastPunch = new LastPunch(currentUserId, HitType.PUNCH);
-                            punchReference.setValue(lastPunch);
-                        }
-                    }
-
-                } catch (NullPointerException ex) {
-                    Toast.makeText(GameActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
+                if (incomingPunch != null && !incomingPunch.getUserID().equals(currentUserId)) {
+                    lastPunch = incomingPunch;
+                    recordPunch();
                 }
             }
 
@@ -174,7 +186,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setListenerForEndGame() {
-        isOverReference.addValueEventListener(new ValueEventListener() {
+        gameOverListener = isOverReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Boolean isOver = dataSnapshot.getValue(Boolean.class);
