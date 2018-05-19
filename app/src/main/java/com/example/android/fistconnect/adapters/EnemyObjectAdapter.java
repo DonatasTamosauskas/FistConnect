@@ -9,23 +9,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.fistconnect.R;
-import com.example.android.fistconnect.models.Enemy;
+import com.example.android.fistconnect.models.User;
 
 import java.util.ArrayList;
 
-/**
- * Created by Domantas on 2018-03-02.
- */
-
-public class EnemyObjectAdapter extends ArrayAdapter<Enemy> {
+public class EnemyObjectAdapter extends ArrayAdapter<User> {
 
     //Constructor with context, ArrayList of enemies
-    public EnemyObjectAdapter(Context context, ArrayList<Enemy> enemies) {
+    public EnemyObjectAdapter(Context context, ArrayList<User> enemies) {
         super(context, 0, enemies);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        Enemy enemy = getItem(position);
+        User enemy = getItem(position);
 
         if(convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_enemyobjectadapter, parent, false);
@@ -35,10 +31,10 @@ public class EnemyObjectAdapter extends ArrayAdapter<Enemy> {
         TextView enemyLevel = (TextView) convertView.findViewById(R.id.enemy_level);
         ImageView enemyImage = (ImageView) convertView.findViewById(R.id.enemy_image);
 
-        enemyUsername.setText(String.valueOf(enemy.username));
-        enemyLevel.setText(String.valueOf(enemy.level));
+        enemyUsername.setText(String.valueOf(enemy.getUsername()));
+        enemyLevel.setText(String.valueOf(enemy.getLevel()));
 
-        switch (enemy.avatarID) {
+        switch (enemy.getAvatarID()) {
             case 0:
                 enemyImage.setImageResource(R.drawable.playericon);
                 break;

@@ -2,15 +2,11 @@ package com.example.android.fistconnect.models;
 
 import java.io.Serializable;
 
-/**
- * Created by Asus on 3/3/2018.
- */
-
 public class Player implements Serializable {
-    String userId;
-    int punchCount;
-    int health;
-    String username;
+    private String userId;
+    private int punchCount;
+    private int health;
+    private String username;
 
     public Player() {
         health = 3;

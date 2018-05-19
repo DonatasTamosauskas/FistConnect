@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.fistconnect.R;
-import com.example.android.fistconnect.models.Enemy;
+import com.example.android.fistconnect.models.User;
 import com.example.android.fistconnect.models.Match;
 import com.example.android.fistconnect.models.Player;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +23,7 @@ public class MatchActivity extends AppCompatActivity {
     private DatabaseReference currentMatchReference;
     private ValueEventListener matchHasStartedListener;
     private FirebaseUser currentUser;
-    private Enemy enemy;
+    private User enemy;
 
     private Match match;
     private Player host;
@@ -33,13 +31,15 @@ public class MatchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
 
-        enemy = (Enemy) getIntent().getSerializableExtra("enemy_information");
+        enemy = (User) getIntent().getSerializableExtra("enemy_information");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         setMachInformation();
@@ -55,8 +55,8 @@ public class MatchActivity extends AppCompatActivity {
         host.setUserId(currentUser.getUid());
         host.setUsername(currentUser.getDisplayName());
 
-        guest.setUsername(enemy.username);
-        guest.setUserId(enemy.userID);
+        guest.setUsername(enemy.getUsername());
+        guest.setUserId(enemy.getUserID());
 
         match.setPlayer1(host);
         match.setPlayer2(guest);
@@ -67,7 +67,7 @@ public class MatchActivity extends AppCompatActivity {
 
     private void setViewText() {
         TextView enemyUsername = findViewById(R.id.match_loading_player_name);
-        enemyUsername.setText(enemy.username);
+        enemyUsername.setText(enemy.getUsername());
     }
 
     private void addListenerForMatchHasStartedEvent() {

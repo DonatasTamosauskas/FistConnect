@@ -55,6 +55,8 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
