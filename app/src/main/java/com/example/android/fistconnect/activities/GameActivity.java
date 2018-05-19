@@ -60,12 +60,19 @@ public class GameActivity extends AppCompatActivity {
         createDatabaseReferences();
         setEnemyId();
         getViewElementReferences();
+        initiateGestureDetector();
 
         makeFirstMoveIfNeeded();
         setListenerForNewPunch();
         setListenerForEndGame();
+    }
 
-        initiateGestureDetector();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(punchListener != null) punchReference.removeEventListener(punchListener);
+        if(gameOverListener != null) isOverReference.removeEventListener(gameOverListener);
+        matchReference.removeValue();
     }
 
     private void createDatabaseReferences() {
@@ -110,38 +117,36 @@ public class GameActivity extends AppCompatActivity {
     private void recordPunch() {
         yourTurnText.setVisibility(View.VISIBLE);
         changeButtonClickability(true);
+        gestureDetector.startListeningForNextPunch();
     }
 
     public void punchButtonClick(View view) {
-        changeButtonClickability(false);
-        yourTurnText.setVisibility(View.INVISIBLE);
-
-        if (isFirstPunch) setLastPunchInDatabase(HitType.PUNCH);
-        else checkIfPunchIsCorrect(HitType.PUNCH);
+        checkIfPunchIsCorrect(HitType.PUNCH);
     }
 
     public void blockButtonClick(View view) {
-        changeButtonClickability(false);
-        yourTurnText.setVisibility(View.INVISIBLE);
-
-        if (isFirstPunch) setLastPunchInDatabase(HitType.BLOCK);
-        else checkIfPunchIsCorrect(HitType.BLOCK);
+        checkIfPunchIsCorrect(HitType.BLOCK);
     }
 
     public void lowBlowButtonClick(View view) {
-        changeButtonClickability(false);
-        yourTurnText.setVisibility(View.INVISIBLE);
-
-        if (isFirstPunch) setLastPunchInDatabase(HitType.LOW_BLOW);
-        else checkIfPunchIsCorrect(HitType.LOW_BLOW);
+        checkIfPunchIsCorrect(HitType.LOW_BLOW);
     }
 
     private void setLastPunchInDatabase(HitType hitType) {
+        changeButtonClickability(false);
+        yourTurnText.setVisibility(View.INVISIBLE);
+
         currentMatch.setLastPunch(new LastPunch(currentUserId, hitType));
         punchReference.setValue(currentMatch.getLastPunch());
     }
 
     private void checkIfPunchIsCorrect(HitType hitType) {
+        if(isFirstPunch) {
+            setLastPunchInDatabase(hitType);
+            isFirstPunch = false;
+            return;
+        }
+
         if (lastPunch.getUserRole() == HitType.PUNCH) {
             if (hitType != HitType.BLOCK) gameLostByCurrentPlayer();
             else setLastPunchInDatabase(hitType);
@@ -163,8 +168,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void gameOverRoutine() {
-        punchReference.removeEventListener(punchListener);
         isOverReference.removeEventListener(gameOverListener);
+        punchReference.removeEventListener(punchListener);
+
+        gameOverListener = null;
+        punchListener = null;
+
         matchReference.removeValue();
         startListActivityAfterTime(2500);
     }
@@ -218,8 +227,19 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void initiateGestureDetector() {
-        Log.i("", "Sensor change");
         SensorManager sensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         gestureDetector = new GestureDetector(sensorManager);
+
+        gestureDetector.setHitListener(new GestureDetector.newHitListener() {
+            @Override
+            public void onHitMade(HitType hitMade) {
+                checkIfPunchIsCorrect(hitMade);
+            }
+
+            @Override
+            public void onHitTimeout() {
+                gameLostByCurrentPlayer();
+            }
+        });
     }
 }

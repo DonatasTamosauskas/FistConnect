@@ -10,14 +10,17 @@ import com.example.android.fistconnect.models.HitType;
 
 public class GestureDetector implements SensorEventListener {
 
-    private static final String TAG = "Accelerometer message";
+    private static final String TAG = "GestureDetector";
 
     private SensorManager mSensorManager;
     private HitType lastHitType;
+    private newHitListener hitListener;
+
     private boolean hasSensors;
     private boolean isListeningForMove;
 
     public GestureDetector(SensorManager sensorManager) {
+        hitListener = null;
         initiateSensors(sensorManager); // mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
     }
 
@@ -38,6 +41,12 @@ public class GestureDetector implements SensorEventListener {
         }
     }
 
+    public void startListeningForNextPunch() {
+        //TODO: Vibrations
+        //TODO: Timeout for punch
+        isListeningForMove = true;
+    }
+
     private void removeSensorListeners() {
         mSensorManager.unregisterListener(this);
     }
@@ -47,31 +56,38 @@ public class GestureDetector implements SensorEventListener {
         if (!isListeningForMove) return;
 
         Sensor sensor = sensorEvent.sensor;
-        boolean punchAllowed = false;
+        boolean punchAllowed = true;
 
         if (sensor.getType() == Sensor.TYPE_GRAVITY) {
             punchAllowed = (sensorEvent.values[2] < 0);
         }
 
-        Log.i(TAG, "Sensor change");
-
         if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[0] > 15 && sensorEvent.values[1] < 5 && sensorEvent.values[2] < 5 && punchAllowed) {
-            lastHitType = HitType.PUNCH;
-            Log.i(TAG, "123 Punch");
+            Log.e(TAG, "123 Punch");
+            isListeningForMove = false;
+            hitListener.onHitMade(HitType.PUNCH);
 
         } else if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[0] > 15 && sensorEvent.values[1] < 5 && sensorEvent.values[2] < 5 && !punchAllowed) {
-            lastHitType = HitType.LOW_BLOW;
-            Log.i(TAG, "123 Low blow");
+            Log.e(TAG, "123 Low blow");
+            isListeningForMove = false;
+            hitListener.onHitMade(HitType.LOW_BLOW);
 
         } else if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION && sensorEvent.values[1] > 15 && sensorEvent.values[0] < 10 && sensorEvent.values[2] < 10) {
-            lastHitType = HitType.BLOCK;
-            Log.i(TAG, "123 Block");
+            Log.e(TAG, "123 Block");
+            isListeningForMove = false;
+            hitListener.onHitMade(HitType.BLOCK);
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    public interface newHitListener {
+        void onHitMade(HitType hitMade);
+
+        void onHitTimeout();
     }
 
     public HitType getLastHitType() {
@@ -96,6 +112,14 @@ public class GestureDetector implements SensorEventListener {
 
     public void setListeningForMove(boolean listeningForMove) {
         isListeningForMove = listeningForMove;
+    }
+
+    public newHitListener getHitListener() {
+        return hitListener;
+    }
+
+    public void setHitListener(newHitListener hitListener) {
+        this.hitListener = hitListener;
     }
 }
 
