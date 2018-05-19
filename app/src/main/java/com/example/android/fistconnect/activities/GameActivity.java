@@ -32,6 +32,7 @@ public class GameActivity extends AppCompatActivity {
 
     private static final long GAME_OVER_VIBRATION_LENGTH = 800;
     private static final long HIT_MADE_VIBRATION_LENGTH = 300;
+    private static final long YOUR_TURN_VIBRATION_LENGTH = 150;
     private static final long WAIT_BEFORE_LIST_ACTIVITY = 2500;
 
     private Match currentMatch;
@@ -196,6 +197,7 @@ public class GameActivity extends AppCompatActivity {
 
                 if (incomingPunch != null && !incomingPunch.getUserID().equals(currentUserId)) {
                     lastPunch = incomingPunch;
+                    vibrateForTime(YOUR_TURN_VIBRATION_LENGTH);
                     recordPunch();
                 }
             }
