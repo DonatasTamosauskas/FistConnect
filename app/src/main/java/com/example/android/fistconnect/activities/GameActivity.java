@@ -3,8 +3,11 @@ package com.example.android.fistconnect.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +29,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class GameActivity extends AppCompatActivity {
+
+    private static final long GAME_OVER_VIBRATION_LENGTH = 800;
+    private static final long HIT_MADE_VIBRATION_LENGTH = 300;
+    private static final long WAIT_BEFORE_LIST_ACTIVITY = 2500;
 
     private Match currentMatch;
     private String currentUserId;
@@ -70,8 +77,8 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(punchListener != null) punchReference.removeEventListener(punchListener);
-        if(gameOverListener != null) isOverReference.removeEventListener(gameOverListener);
+        if (punchListener != null) punchReference.removeEventListener(punchListener);
+        if (gameOverListener != null) isOverReference.removeEventListener(gameOverListener);
         matchReference.removeValue();
     }
 
@@ -141,7 +148,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void checkIfPunchIsCorrect(HitType hitType) {
-        if(isFirstPunch) {
+        if (isFirstPunch) {
             setLastPunchInDatabase(hitType);
             isFirstPunch = false;
             return;
@@ -163,6 +170,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void gameLostByCurrentPlayer() {
         Toast.makeText(this, "You lost!", Toast.LENGTH_SHORT).show();
+        vibrateForTime(GAME_OVER_VIBRATION_LENGTH);
         isOverReference.setValue(true);
         gameOverRoutine();
     }
@@ -175,7 +183,7 @@ public class GameActivity extends AppCompatActivity {
         punchListener = null;
 
         matchReference.removeValue();
-        startListActivityAfterTime(2500);
+        startListActivityAfterTime(WAIT_BEFORE_LIST_ACTIVITY);
     }
 
     private void setListenerForNewPunch() {
@@ -216,7 +224,7 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    private void startListActivityAfterTime(int milliseconds) {
+    private void startListActivityAfterTime(long milliseconds) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -233,6 +241,7 @@ public class GameActivity extends AppCompatActivity {
         gestureDetector.setHitListener(new GestureDetector.newHitListener() {
             @Override
             public void onHitMade(HitType hitMade) {
+                vibrateForTime(HIT_MADE_VIBRATION_LENGTH);
                 checkIfPunchIsCorrect(hitMade);
             }
 
@@ -241,5 +250,16 @@ public class GameActivity extends AppCompatActivity {
                 gameLostByCurrentPlayer();
             }
         });
+    }
+
+    private void vibrateForTime(long milliseconds) {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(milliseconds);
+        }
     }
 }
