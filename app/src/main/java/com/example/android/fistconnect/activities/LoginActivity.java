@@ -3,41 +3,28 @@ package com.example.android.fistconnect.activities;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.android.fistconnect.R;
-import com.example.android.fistconnect.models.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser currentUser;
-    private DatabaseReference databaseReference;
-    private int currentAvatarId = 0;
-    public MediaPlayer musicPlayer;
-
     private static final int RC_SIGN_IN = 123;
+    public MediaPlayer musicPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,30 +36,25 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         startMusic();
-//        launchFirebaseUiLogin();
+        launchFirebaseUiLogin();
 
-        setContentView(R.layout.activity_login);
-
-        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            updateUI();
-            firebaseAuth.removeAuthStateListener(mAuthListener);
-        }
+        if (musicPlayer != null) startMusic();
     }
 
     @Override
-    public void onStop() {
+    protected void onPause() {
+        super.onPause();
+        musicPlayer.stop();
+    }
+
+    @Override
+    protected void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            firebaseAuth.removeAuthStateListener(mAuthListener);
-        }
         musicPlayer.stop();
     }
 
@@ -107,89 +89,48 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                checkFirstTimeRegistrationAndProceedLogin(user);
 
-
-                // ...
             } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
+                displayConnectionErrorMessage();
             }
         }
     }
 
-    public void register(View v) {
-        EditText email = (EditText) findViewById(R.id.registration_email);
-        String rEmail = email.getText().toString();
+    private void checkFirstTimeRegistrationAndProceedLogin(FirebaseUser user) {
+        DatabaseReference usersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users");
 
-        EditText username = (EditText) findViewById(R.id.registration_username);
-        final String rUserName = username.getText().toString();
+        usersDatabaseReference.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        EditText password = (EditText) findViewById(R.id.registration_password);
-        String rPassword = password.getText().toString();
+                if (dataSnapshot.exists()) proceedToListActivity();
+                else proceedToFirstLoginActivity();
+            }
 
-        if (TextUtils.isEmpty(rEmail) || TextUtils.isEmpty(rUserName) || TextUtils.isEmpty(rPassword)) {
-            Toast.makeText(this, "Please fill in empty fields", Toast.LENGTH_SHORT).show();
-        } else {
-            firebaseAuth.createUserWithEmailAndPassword(rEmail, rPassword)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                //Log.d(TAG, "createUserWithEmail:success");
-                                currentUser = firebaseAuth.getCurrentUser();
-
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(rUserName).build();
-
-                                currentUser.updateProfile(profileUpdates);
-
-                                // Adding a new user in database by UID
-                                String userID = currentUser.getUid();
-                                databaseReference = FirebaseDatabase.getInstance().getReference();
-                                User newCurrentUser = new User(rUserName, 0, currentAvatarId, userID);
-                                databaseReference.child("users").child(userID).setValue(newCurrentUser);
-
-                                updateUI();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                //Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
-                                //Toast.LENGTH_SHORT).show();
-                                //updateUI(null);
-                            }
-                        }
-                    });
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                displayConnectionErrorMessage();
+            }
+        });
     }
 
-    //Needed intent to change UI!!
-    private void updateUI() {
-        Toast.makeText(this, "Welcome, warrior!", Toast.LENGTH_SHORT).show();
-        Intent loginIntent = new Intent(LoginActivity.this, ListActivity.class);
-        LoginActivity.this.startActivity(loginIntent);
+    private void proceedToFirstLoginActivity() {
+        Toast.makeText(this, "FirstLoginAct", Toast.LENGTH_SHORT).show();
+        musicPlayer.stop();
+        Intent firstLoginActivity = new Intent(LoginActivity.this, FirstLoginInfoActivity.class);
+        startActivity(firstLoginActivity);
     }
 
-    public void imageId1(View v) {
-        currentAvatarId = 0;
-
-        LinearLayout linearLayout = findViewById(R.id.main_image);
-        linearLayout.setVisibility(LinearLayout.GONE);
-
-        LinearLayout secondLayout = findViewById(R.id.first_image);
-        secondLayout.setVisibility(LinearLayout.VISIBLE);
+    private void proceedToListActivity() {
+        Toast.makeText(this, "ListAct", Toast.LENGTH_SHORT).show();
+        musicPlayer.stop();
+        Intent listActivity = new Intent(LoginActivity.this, ListActivity.class);
+        startActivity(listActivity);
     }
 
-    public void imageId2(View v) {
-        currentAvatarId = 1;
-
-        LinearLayout linearLayout = findViewById(R.id.main_image);
-        linearLayout.setVisibility(LinearLayout.GONE);
-
-        LinearLayout secondLayout = findViewById(R.id.second_image);
-        secondLayout.setVisibility(LinearLayout.VISIBLE);
+    private void displayConnectionErrorMessage() {
+        Toast.makeText(this, "Error has occurred, please try again.", Toast.LENGTH_SHORT).show();
     }
 }
 
