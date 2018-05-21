@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     private int avatarID;
-    private int level;
+    private Integer level;
     private String username;
     private String userID;
 
@@ -14,7 +14,7 @@ public class User implements Serializable {
         level = 0;
     }
 
-    public User(String username, int level, int avatarID, String userID){
+    public User(String username, int level, int avatarID, String userID) {
         this.setUsername(username);
         this.setLevel(level);
         this.setAvatarID(avatarID);
@@ -29,11 +29,11 @@ public class User implements Serializable {
         this.avatarID = avatarID;
     }
 
-    public int getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 

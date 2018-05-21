@@ -67,6 +67,9 @@ public class GameActivity extends AppCompatActivity {
         currentMatch = (Match) getIntent().getSerializableExtra("match_information");
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        //TODO: Add time to hits
+        //TODO: Remove buttons (via boolean if possible)
+
         createDatabaseReferences();
         setEnemyId();
         getViewElementReferences();
@@ -217,12 +220,31 @@ public class GameActivity extends AppCompatActivity {
 
                 if (isOver != null && isOver) {
                     Toast.makeText(GameActivity.this, "Game Over, you won!", Toast.LENGTH_SHORT).show();
+                    increaseUserLevel();
                     gameOverRoutine();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void increaseUserLevel() {
+        final DatabaseReference currentUserLevelReference = databaseReference.child("users").child(currentUserId).child("level");
+
+        currentUserLevelReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Integer userLevel = dataSnapshot.getValue(Integer.class);
+
+                if(userLevel != null) currentUserLevelReference.setValue(userLevel + 1);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });

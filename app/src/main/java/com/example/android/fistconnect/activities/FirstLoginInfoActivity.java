@@ -20,7 +20,6 @@ public class FirstLoginInfoActivity extends AppCompatActivity {
 
     private static final int BEGINNER_LEVEL = 0;
 
-    private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
     private Integer currentAvatarId;
@@ -36,7 +35,7 @@ public class FirstLoginInfoActivity extends AppCompatActivity {
     }
 
     private void createDatabaseConnections() {
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
