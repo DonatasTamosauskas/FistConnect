@@ -46,17 +46,17 @@ public class LoginActivity extends AppCompatActivity {
         if (musicPlayer != null) startMusic();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        musicPlayer.stop();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        musicPlayer.stop();
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        musicPlayer.stop();
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        musicPlayer.stop();
+//    }
 
     private void startMusic() {
         musicPlayer = MediaPlayer.create(this, R.raw.main_theme_reg_fin);
@@ -116,14 +116,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void proceedToFirstLoginActivity() {
-        Toast.makeText(this, "FirstLoginAct", Toast.LENGTH_SHORT).show();
         musicPlayer.stop();
         Intent firstLoginActivity = new Intent(LoginActivity.this, FirstLoginInfoActivity.class);
         startActivity(firstLoginActivity);
     }
 
     private void proceedToListActivity() {
-        Toast.makeText(this, "ListAct", Toast.LENGTH_SHORT).show();
         musicPlayer.stop();
         Intent listActivity = new Intent(LoginActivity.this, ListActivity.class);
         startActivity(listActivity);

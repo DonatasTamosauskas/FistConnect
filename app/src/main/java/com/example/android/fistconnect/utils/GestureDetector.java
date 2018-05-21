@@ -1,16 +1,21 @@
 package com.example.android.fistconnect.utils;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.util.Log;
 
+import com.example.android.fistconnect.activities.GameActivity;
+import com.example.android.fistconnect.activities.ListActivity;
 import com.example.android.fistconnect.models.HitType;
 
 public class GestureDetector implements SensorEventListener {
 
     private static final String TAG = "GestureDetector";
+    private static final long HIT_TIMEOUT_TIME = 3000;
 
     private SensorManager mSensorManager;
     private HitType lastHitType;
@@ -44,11 +49,11 @@ public class GestureDetector implements SensorEventListener {
     }
 
     public void startListeningForNextPunch() {
-        //TODO: Timeout for punch
+        startHitTimeoutTimer(HIT_TIMEOUT_TIME);
         isListeningForMove = true;
     }
 
-    private void removeSensorListeners() {
+    public void removeSensorListeners() {
         mSensorManager.unregisterListener(this);
     }
 
@@ -82,6 +87,16 @@ public class GestureDetector implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    private void startHitTimeoutTimer(long milliseconds) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(isListeningForMove) hitListener.onHitTimeout();
+                isListeningForMove = false;
+            }
+        }, milliseconds);
     }
 
     public interface newHitListener {
@@ -120,5 +135,9 @@ public class GestureDetector implements SensorEventListener {
 
     public void setHitListener(newHitListener hitListener) {
         this.hitListener = hitListener;
+    }
+
+    public static long getHitTimeoutTime() {
+        return HIT_TIMEOUT_TIME;
     }
 }

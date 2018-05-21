@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -34,6 +35,7 @@ public class GameActivity extends AppCompatActivity {
     private static final long HIT_MADE_VIBRATION_LENGTH = 300;
     private static final long YOUR_TURN_VIBRATION_LENGTH = 150;
     private static final long WAIT_BEFORE_LIST_ACTIVITY = 2500;
+    private static final boolean DEBUG_MODE = false;
 
     private Match currentMatch;
     private String currentUserId;
@@ -50,6 +52,7 @@ public class GameActivity extends AppCompatActivity {
     private ValueEventListener gameOverListener;
 
     private TextView yourTurnText;
+    private TextView timeoutTimer;
     private Button punchButton;
     private Button blockButton;
     private Button lowBlowButton;
@@ -66,9 +69,6 @@ public class GameActivity extends AppCompatActivity {
 
         currentMatch = (Match) getIntent().getSerializableExtra("match_information");
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        //TODO: Add time to hits
-        //TODO: Remove buttons (via boolean if possible)
 
         createDatabaseReferences();
         setEnemyId();
@@ -105,9 +105,17 @@ public class GameActivity extends AppCompatActivity {
 
     private void getViewElementReferences() {
         yourTurnText = findViewById(R.id.your_turn_text);
+        timeoutTimer = findViewById(R.id.hit_timeout_timer);
+
         punchButton = findViewById(R.id.punch_button);
         blockButton = findViewById(R.id.block_button);
         lowBlowButton = findViewById(R.id.low_blow_button);
+
+        if(DEBUG_MODE) {
+            punchButton.setVisibility(View.VISIBLE);
+            blockButton.setVisibility(View.VISIBLE);
+            lowBlowButton.setVisibility(View.VISIBLE);
+        }
 
         changeButtonClickability(false);
     }
@@ -129,8 +137,25 @@ public class GameActivity extends AppCompatActivity {
 
     private void recordPunch() {
         yourTurnText.setVisibility(View.VISIBLE);
-        changeButtonClickability(true);
+        timeoutTimer.setVisibility(View.VISIBLE);
+
+        startTimerCountdown();
+
+        if(DEBUG_MODE) changeButtonClickability(true);
         gestureDetector.startListeningForNextPunch();
+    }
+
+    private void startTimerCountdown() {
+        new CountDownTimer(GestureDetector.getHitTimeoutTime(), 10) {
+
+            public void onTick(long millisUntilFinished) {
+                timeoutTimer.setText(String.valueOf(millisUntilFinished / 10));
+            }
+
+            public void onFinish() {
+            }
+
+        }.start();
     }
 
     public void punchButtonClick(View view) {
@@ -182,13 +207,15 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void gameOverRoutine() {
-        isOverReference.removeEventListener(gameOverListener);
-        punchReference.removeEventListener(punchListener);
+        if(gameOverListener != null) isOverReference.removeEventListener(gameOverListener);
+        if(gameOverListener != null) punchReference.removeEventListener(punchListener);
 
         gameOverListener = null;
         punchListener = null;
 
         matchReference.removeValue();
+        gestureDetector.removeSensorListeners();
+
         startListActivityAfterTime(WAIT_BEFORE_LIST_ACTIVITY);
     }
 

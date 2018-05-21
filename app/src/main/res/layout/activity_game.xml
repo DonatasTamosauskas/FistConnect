@@ -18,6 +18,17 @@
         android:textSize="20dp"
         android:visibility="invisible"/>
 
+    <TextView
+        android:id="@+id/hit_timeout_timer"
+        android:layout_below="@+id/your_turn_text"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textStyle="bold"
+        android:textSize="80dp"
+        android:visibility="invisible"/>
+
     <Button
         android:id="@+id/punch_button"
         android:layout_above="@id/block_button"
@@ -25,7 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="PUNCH"
-        android:onClick="punchButtonClick"/>
+        android:onClick="punchButtonClick"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/block_button"
@@ -34,7 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="BLOCK"
-        android:onClick="blockButtonClick"/>
+        android:onClick="blockButtonClick"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/low_blow_button"
@@ -44,7 +57,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="LOW BLOW"
-        android:onClick="lowBlowButtonClick"/>
+        android:onClick="lowBlowButtonClick"
+        android:visibility="invisible"/>
 
 
 </RelativeLayout>
